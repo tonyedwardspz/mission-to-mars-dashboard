@@ -19,9 +19,11 @@ $( document ).ready(function() {
     fillTeamSelect();
 
     if (window.location.pathname === '/') {
-        fillStatusTable();
-        setupDashCharts();
-        setupMissionChart();
+        if (teams != null){
+            fillStatusTable();
+            setupDashCharts();
+            setupMissionChart();
+        }
     }
 
     if (window.location.pathname === '/prices') {
@@ -302,9 +304,12 @@ function loadMission(){
 }
 
 function fillTeamSelect(){
-    // if teams is an empty object, return
-    if (Object.keys(teams).length === 0) 
+    if (teams == null)
         return;
+    if(teams != null){
+        if (Object.keys(teams).length === 0) 
+            return;
+    }
 
     let selects = [];
     if (window.location.pathname === '/setup') {
@@ -391,6 +396,13 @@ function getCurrentPrice(){
 }
 
 function fillStatusTable(){
+    if (teams == null)
+        return;
+    if(teams != null){
+        if (Object.keys(teams).length === 0) 
+            return;
+    }
+
     let table = document.querySelector('#teamStatusLabel');
     table.innerHTML = '';
     teams.forEach(team => {
