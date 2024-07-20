@@ -37,9 +37,7 @@ navigation:
     url: /stories
   - title: Mission Admin
     url: /admin
-  - title: Setup
-    url: /setup
-  - title: Prices
+  - title: Core Coin Tracker
     url: /prices
 
 include:

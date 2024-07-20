@@ -206,7 +206,7 @@ function newMission(missionData){
     saveMission();
     teams = [];
 
-    hireCosts = getPrices(parseInt(mission.startingPrice), "4", 2);
+    hireCosts = getPrices(parseInt(mission.startingPrice), "5", 4 );
     saveCosts();
 
     console.log("Mission created");
@@ -437,8 +437,9 @@ function fillHireCostsTable(){
             break;
         }
         i++;
-        for (let hour = 10; hour < 16; hour++) {
-            let j = 0;
+        let j = 0;
+        for (let hour = 10; hour < 17; hour++) {
+            
             for (let minute = 0; minute < 60; minute += 15) {
                 j++;
                 let time = new Date(date);
@@ -447,13 +448,12 @@ function fillHireCostsTable(){
                 let cost = hireCosts[i][j-1];
                 
                 let diff;
-                if (lastCost === 0) {
+                if (i === 1 && j === 1) {
                     diff = 0;
                 } else {
                     diff = cost - lastCost;
                 }
 
-                // create a new row for the table
                 let formattedTime = time.toLocaleString('en-UK', { hour: 'numeric', minute: 'numeric', hour12: true });
                 costsTable.push({ date: date.toDateString(), time: formattedTime, cost: cost, diff: diff });
                 lastCost = cost;
@@ -467,7 +467,6 @@ function fillHireCostsTable(){
     Object.keys(costsTable).forEach(key => {
         let row = document.createElement('tr');
 
-        // add a td for each element in the costsTable array
         let date = document.createElement('td');
         date.textContent = costsTable[key].date;
         let time = document.createElement('td');

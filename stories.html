@@ -4,52 +4,66 @@ layout: page
 
 <div class="row">
 
-    <h2>Mission User Stories</h2>
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h2>Mission User Stories</h2>
+            </div>
+            <div class="card-body">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Description</th>
+                            <th>Acceptance Criteria</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
 
-    <table class="table">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Description</th>
-          <th>Acceptance Criteria</th>
-          <th>Value</th>
-        </tr>
-      </thead>
-  
-      <tbody>
-        {% for story in site.data.stories.stories %}
-        <tr class="story">
-            <td>{{ story.id }}</td>
-            <td>{{ story.description }}</td>
-            <td>{{ story.acceptance }}</td>
-            <td>{{ story.value }}</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+                    <tbody>
+                        {% for story in site.data.stories.stories %}
+                        <tr class="story">
+                            <td>{{ story.id }}</td>
+                            <td>{{ story.description }}</td>
+                            <td>{{ story.acceptance }}</td>
+                            <td>{{ story.value }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12">
 
-    <h2>Bonus Stories</h2>
+        <div class="card">
+            <div class="card-header">
+                <h2>Bonus Stories</h2>
+            </div>
 
-    <table class="table">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Description</th>
-          <th>Acceptance Criteria</th>
-          <th>Value</th>
-        </tr>
-      </thead>
-  
-      <tbody>
-        {% for story in site.data.stories.bonusStories %}
-        <tr class="story">
-            <td>{{ story.id }}</td>
-            <td>{{ story.description }}</td>
-            <td>{{ story.acceptance }}</td>
-            <td>{{ story.value }}</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  
-  </div>
+            <div class="card-body">
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Description</th>
+                            <th>Acceptance Criteria</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for story in site.data.stories.bonusStories %}
+                        <tr class="story">
+                            <td>{{ story.id }}</td>
+                            <td>{{ story.description }}</td>
+                            <td>{{ story.acceptance }}</td>
+                            <td>{{ story.value }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>  
