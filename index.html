@@ -1,0 +1,58 @@
+---
+layout: page
+---
+
+<div class="row">
+  
+    <div class="col-md-5">
+      <div class="card">
+        <div class="card-header">
+          <h4>Team Totals</h4>
+        </div>
+        <div class="card-body">
+          
+          <canvas id="teamTotals" style="width:100%"></canvas>
+
+        </div>
+      </div>
+    </div>
+  
+    <div class="col-md-7">
+      <div class="card">
+  
+        <div class="card-header">
+          <h4>Rise & Fall of Teams</h4>
+        </div>
+        <div class="panel-body">
+          <canvas id="teamRiseFall" style="width:100%"></canvas>
+        </div>
+      </div>
+  
+    </div>
+  
+    <div class="col-md-7">
+      <div class="card">
+  
+        <div class="card-header">
+          <h4>Current Stories</h4>
+        </div>
+
+        <div class="card-body">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Team Name</th>
+                <th>Current Balance</th>
+                <th>Current Story</th>
+              </tr>
+            </thead>
+            <tbody id="teamStatusLabel">
+              <!-- Inject team status via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+  
+    </div>
+  
+  </div>

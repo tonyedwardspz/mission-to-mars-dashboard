@@ -1,0 +1,118 @@
+---
+layout: page
+---
+
+<div class="row">
+    <div class="col-md-12">
+        <p>
+            Add teams or change their monies here. You can also pay out bonuses or bill teams for time used.
+        </p>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card card-success">
+            <div class="card-header">
+                <h4>Story Completed</h4>
+            </div>
+            <div class="card-body">
+                <form id="story-complete-form">
+                    <div class="form-group">
+                        <label for="task-team">Team name</label>
+                        <select name="teamName" id="taskTeamName" class="form-control">
+                            <!-- Inject teams via JS -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="task-description">Story Number</label>
+                        <select name="taskDescription" id="taskDescription" class="form-control">
+                            {% for story in site.data.stories.stories %}
+                                <option value="{{ story.id }}">Story {{ story.id }}</option>
+                            {% endfor %}
+                        </select>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="task-payout">Value</label>
+                        <div class="input-group">
+                            <div class="input-group-addon">£</div>
+                            <input type="number" placeholder="0.0" name="taskPayout" id="taskPayout" class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="taskSecret">Secret Code</label>
+                        <input type="password" name="taskSecret"  class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" class="btn btn-success" value="Pay this team!" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card card-danger">
+            <div class="card-header">
+                <h4>Robot Hired</h4>
+            </div>
+            <div class="card-body">
+                <form id="cost-incurred-form">
+                    <div class="form-group">
+                        <label for="cost-team">Team name</label>
+                        <select name="costTeam" id="teamCost" class="form-control">
+                            <!-- Inject teams via JS -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="cost-value">Minutes Used</label>
+                        <select name="costValue" id="costValue" class="form-control">
+                            {% for i in (1..20) %}
+                                <option value="{{ i }}">{{ i }} Minute{% if i > 1 %}s{% endif %}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="cost-secret">Secret Code</label>
+                        <input type="password" name="costSecret" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" class="btn btn-danger" value="Bill this team!" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card card-success">
+            <div class="card-header">
+                <h4>Bonus earned!</h4>
+            </div>
+            <div class="card-body">
+                <form id="bonus-earned-form">
+                    <div class="form-group">
+                        <label for="bonus-team">Team name</label>
+                        <select name="bonusTeam" id="teamBonus" class="form-control">
+                            <!-- Inject teams via JS -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="task-payout">Value</label>
+                        <div class="input-group">
+                            <div class="input-group-addon">£</div>
+                            <input type="number" placeholder="0.0" name="bonusPayout" id="bonusPayout" class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="bonus-secret">Secret Code</label>
+                        <input type="password" name="bonusSecret" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" class="btn btn-success" value="Pay this team!" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+

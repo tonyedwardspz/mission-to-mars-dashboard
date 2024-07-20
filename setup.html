@@ -1,0 +1,93 @@
+---
+layout: page
+---
+
+<div class="row">
+
+    <div class="col-md-12">
+        <p>
+            Setup a new mission and the teams here.
+        </p>
+
+    </div>
+
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h4>Mission Details</h4>
+                <p>Start a new mission. This will reset all data local data.</p>
+            </div>
+            <div class="card-body">
+                <form id="newMission">
+                    <div class="form-group">
+                        <label for="MissionName">Mission name</label>
+                        <input type="text" id="missionName" name="missionName" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label for="startDate">Start date</label>
+                        <input type="date" id="startDate" name="startDate" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label for="endDate">End date</label>
+                        <input type="date" id="endDate" name="endDate" class="form-control" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="coreCoinPrice">Core Coin Starting Price</label>
+                        <input type="number" id="coreCoinPrice" name="coreCoinPrice" class="form-control" value="250" />
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" class="btn btn-success" value="Start Mission!" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card card-info">
+            <div class="card-header">
+                <h4>Add a team</h4>
+            </div>
+            <div class="card-body">
+                <form id="addTeamForm">
+                    <div class="form-group">
+                        <label for="teamName">Team name</label>
+                        <input type="text" id="teamName" name="teamName" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label for="teamBalance">Starting balance</label>
+                        <div class="input-group">
+                            <div class="input-group-addon">£</div>
+                            <input type="number" placeholder="0.00" name="teamBalance" class="form-control" value="5000"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" class="btn btn-primary btn-block" value="Save New Team!" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card card-info">
+            <div class="card-header">
+                <h4>Remove a team!</h4>
+            </div>
+            <div class="card-body">
+                <form id="remove-team-form">
+                    <div class="form-group">
+                        <label for="removeTeamName">Team name</label>
+                        <select name="removeTeamName" id="removeTeamName" class="form-control">
+                            
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" class="btn btn-danger btn-block" value="Remove Team!" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

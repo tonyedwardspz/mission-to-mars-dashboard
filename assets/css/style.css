@@ -1,0 +1,13 @@
+html {
+    position: relative;
+    min-height: 100%;
+  }
+
+body {
+    min-height: 51.5rem;
+    padding: 4rem 3rem 0 3rem;
+}
+
+main {
+    padding-top: 3rem;
+}

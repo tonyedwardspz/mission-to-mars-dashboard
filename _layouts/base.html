@@ -1,0 +1,59 @@
+---
+# Add "layout: compress" here to compress the html code
+---
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>{{site.title}}</title>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="{{ '/assets/css/bootstrap.css' | relative_url }}">
+    <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
+
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+        <a class="navbar-brand" href="#">Teams Dashboard</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar"
+            aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbar">
+            <ul class="navbar-nav mr-auto">
+                {% for item in site.navigation %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ item.url | relative_url }}">{{ item.title }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </nav>
+
+    {{ content }}
+
+    <footer id="site-footer">
+        <div class="container">
+            <p>This is where the fat footer goes</p>
+            <div class="row">
+            </div>
+        </div>
+    </footer>
+
+    <script src="{{ '/assets/js/jqueary.js' | relative_url }}" defer></script>
+    <script src="{{ '/assets/js/bootstrap.bundle.js' | relative_url }}" defer></script>
+    <script src="{{ '/assets/js/chart.js' | relative_url }}" defer></script>
+    <script src="{{ '/assets/js/coreCoin.js' | relative_url }}" defer></script>
+    <script src="{{ '/assets/js/models.js' | relative_url }}" defer></script>
+    <script src="{{ '/assets/js/functions.js' | relative_url }}" defer></script>
+    <script src="{{ '/assets/js/app.js' | relative_url }}" defer></script>
+</body>
+
+</html>
