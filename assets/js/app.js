@@ -15,7 +15,6 @@ $( document ).ready(function() {
     loadTeams();
     loadMission();
     loadPrices();
-    console.log(getCurrentPrice());
 
     fillTeamSelect();
 
