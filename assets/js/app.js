@@ -24,6 +24,10 @@ $( document ).ready(function() {
             setupDashCharts();
             setupMissionChart();
         }
+
+        if (mission == {} || (new Date(mission.end) < new Date())){
+            $('#noMissionModal').modal('show');
+        }
     }
 
     if (window.location.pathname === '/prices') {
