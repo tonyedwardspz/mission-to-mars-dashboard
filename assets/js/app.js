@@ -48,6 +48,21 @@ function loadPrices(){
     console.log("Prices loaded: ", hireCosts);
 }
 
+function createExportJson() {
+
+    console.log("Setting up export");
+    let exportData = {
+        teams: teams,
+        mission: mission,
+        hireCosts: hireCosts
+    };
+
+    var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportData, null, 4));
+    var dlAnchorElem = document.getElementById('downloadAnchorElem');
+    dlAnchorElem.setAttribute("href", dataStr );
+    dlAnchorElem.setAttribute("download", "M2M Export" + Date() + ".json");
+}
+
 function setupDashCharts(){
     let ctx = document.getElementById('teamTotals').getContext('2d');
     let statusChart = new Chart(ctx, {
@@ -136,6 +151,7 @@ function setFormEventListeners() {
 
     if (window.location.pathname === '/setup') {
         updateRemoveTeamsSelect();
+        createExportJson();
 
         $('#addTeamForm').on('submit', function(e) {
             e.preventDefault();
