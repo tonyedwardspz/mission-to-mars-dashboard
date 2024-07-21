@@ -70,7 +70,12 @@ function createTransaction(team, story, value){
         value: value
     }
 
+    if (story.toLowerCase().includes("starting")){
+        transaction.date = new Date(mission.start).setHours(10, 0, 0, 0);
+    }
+
     team.transactions.push(transaction);
+    return team;
 }
 
 function setupDashCharts(){
@@ -445,6 +450,8 @@ function completeBonus(storyId, teamName){
 
 function addTeam(teamData){
     let team = new Team(teamData.teamName, teamData.teamBalance);
+    team = createTransaction(team, "Starting Balance", teamData.teamBalance);
+
     teams.push(team);
     console.log(teams);
     saveTeams();
