@@ -59,9 +59,9 @@ If needed, this site can be hosted with any provider that is suitable for use St
 
 ## Heritage
 
-The Mission to Mars dashboard was originally built by [Barry Rhodes](https://github.com/bjrhodes), and updated and generally kept alive by [Tony Edwards](https://github.com/tonyedwardspz/). 
+The Mission to Mars dashboard was originally built by [Barry Rhodes](https://github.com/bjrhodes), then updated and generally kept alive by [Tony Edwards](https://github.com/tonyedwardspz/). 
 
-The first dashboard upgrade was by [Liam Cornbill](https://github.com/LiamCornbill), with the current version created by [Tony Edwards](https://github.com/tonyedwardspz/).
+The first major dashboard upgrade was by [Liam Cornbill](https://github.com/LiamCornbill), with the current version created by [Tony Edwards](https://github.com/tonyedwardspz/).
 
 [Liam Cornbill](https://github.com/LiamCornbill) also wrote the Core Coin tracker part of the dashboard as a seperate project. It was integrated into the application in the most recent upgrade.
 

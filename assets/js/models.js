@@ -13,6 +13,7 @@ class Team {
         this.balance = startingBalance;
         this.currentStory = 1;
         this.bonusStoriesCompleted = [];
+        this.transactions = [];
     }
 }
 

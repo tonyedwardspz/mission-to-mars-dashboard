@@ -63,6 +63,16 @@ function createExportJson() {
     dlAnchorElem.setAttribute("download", "M2M Export" + Date() + ".json");
 }
 
+function createTransaction(team, story, value){
+    let transaction = {
+        date: new Date().getTime(),
+        story: story,
+        value: value
+    }
+
+    team.transactions.push(transaction);
+}
+
 function setupDashCharts(){
     let ctx = document.getElementById('teamTotals').getContext('2d');
     let statusChart = new Chart(ctx, {
@@ -365,19 +375,21 @@ function newMission(missionData){
 function saveCosts(){
     let costsJson = JSON.stringify(hireCosts);
     saveJsonToLocalStorage(costsJson, 'prices');
-
 }
 
 function bonusEarned(teamName, bonus){
     let team = findTeam(teamName);
     team.balance = parseInt(team.balance) + parseInt(bonus);
+    createTransaction(team, "Bounus Amount", bonus);
     saveTeams();
     console.log("Bonus added");
 }
 
 function deductCost(teamName, cost) {
     let team = findTeam(teamName);
-    team.balance = parseInt(team.balance) - (parseInt(cost) * getCurrentPrice());
+    let spend = parseInt(cost) * getCurrentPrice();
+    team.balance = parseInt(team.balance) - parseInt(spend);
+    createTransaction(team, "Robot Hired for " + cost + " minutes", spend);
     saveTeams();
     console.log("Cost deducted");
 }
@@ -394,8 +406,9 @@ function completeStory(storyId, teamName){
     if (story) {
         value = story.value;
     }
-
     $('#taskPayout').val(value);
+
+    createTransaction(team, "Story " + storyId + " completed", story.value);
 
     saveTeams();
     console.log("Story completed"); 
@@ -423,9 +436,9 @@ function completeBonus(storyId, teamName){
     if (story) {
         value = story.value;
     }
-
     $('#bonusStoryPayout').val(value);
 
+    createTransaction(team, "Bonus Story " + storyId + " completed", story.value);
     saveTeams();
     console.log("Story completed"); 
 }
