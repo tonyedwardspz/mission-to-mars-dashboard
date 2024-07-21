@@ -12,6 +12,20 @@ function loadStories() {
     });
 }
 
+function loadBonusStories() {
+    return new Promise((resolve, reject) => {
+        $.getJSON("./_data/stories.json", function(data) {
+            let stories = [];
+            data.bonusStories.forEach(story => {
+                stories.push(new Story(story.id, story.description, story.acceptance, story.value));
+            });
+            resolve(stories); 
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            reject(errorThrown);
+        });
+    });
+}
+
 function saveJsonToLocalStorage(jsonString, key) {
     if (typeof jsonString !== 'string') {
         throw new Error('The jsonString parameter must be a string.');

@@ -45,7 +45,7 @@ layout: page
                         <input type="password" name="taskSecret"  class="form-control">
                     </div>
                     <div class="form-group">
-                        <input type="submit" class="btn btn-success" value="Pay this team!" />
+                        <input type="submit" class="btn btn-success" value="Pay this team" />
                     </div>
                 </form>
             </div>
@@ -79,7 +79,7 @@ layout: page
                             <div class="input-group-prepend">
                               <div class="input-group-text">£</div>
                             </div>
-                            <input type="text" placeholder="0.0" name="cuurentPrice" id="cuurentPrice" class="form-control" readonly>
+                            <input type="text" placeholder="0.0" name="currentPrice" id="currentPrice" class="form-control" readonly>
                         </div>
                     </div>
                     <div class="form-group">
@@ -87,7 +87,7 @@ layout: page
                         <input type="password" name="costSecret" class="form-control">
                     </div>
                     <div class="form-group">
-                        <input type="submit" class="btn btn-danger" value="Bill this team!" />
+                        <input type="submit" class="btn btn-danger" value="Bill this team" />
                     </div>
                 </form>
             </div>
@@ -97,7 +97,7 @@ layout: page
     <div class="col-md-4">
         <div class="card card-success">
             <div class="card-header">
-                <h4>Bonus earned!</h4>
+                <h4>Bonus earned</h4>
             </div>
             <div class="card-body">
                 <form id="bonus-earned-form">
@@ -114,13 +114,56 @@ layout: page
                                 <div class="input-group-prepend">
                                   <div class="input-group-text">£</div>
                                 </div>
-                                <input type="number" placeholder="0.0" name="bonusPayout" id="bonusPayout" class="form-control">
+                                <input type="number" step="50" placeholder="00" name="bonusPayout" id="bonusPayout" class="form-control">
                             </div>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="bonus-secret">Secret Code</label>
                         <input type="password" name="bonusSecret" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" class="btn btn-success" value="Pay this team" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card card-success">
+            <div class="card-header">
+                <h4>Story Completed</h4>
+            </div>
+            <div class="card-body">
+                <form id="bonus-story-complete-form">
+                    <div class="form-group">
+                        <label for="task-team">Team name</label>
+                        <select name="teamName" id="bonusStoryTeamName" class="form-control">
+                            <!-- Inject teams via JS -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="bonusStoryDescription">Story Number</label>
+                        <select name="bonusStoryDescription" id="bonusStoryDescription" class="form-control">
+                            {% for story in site.data.stories.bonusStories %}
+                                <option value="{{ story.id }}">Story {{ story.id }}</option>
+                            {% endfor %}
+                        </select>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="bonusStory">Value</label>
+                        <div class="input-group mb-2 mr-sm-2">
+                            <div class="input-group-prepend">
+                              <div class="input-group-text">£</div>
+                            </div>
+                            <input type="text" placeholder="0.0" name="bonusStoryPayout" id="bonusStoryPayout" class="form-control" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="taskSecret">Secret Code</label>
+                        <input type="password" name="bonusStorySecret"  class="form-control">
                     </div>
                     <div class="form-group">
                         <input type="submit" class="btn btn-success" value="Pay this team!" />

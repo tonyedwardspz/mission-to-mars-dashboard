@@ -1,4 +1,5 @@
 let stories = [];
+let bonusStories = [];
 let teams = [];
 let password = 'secret';
 let mission = {};
@@ -10,6 +11,10 @@ $( document ).ready(function() {
 
     loadStories().then((data) => {
         stories = data;
+    });
+
+    loadBonusStories().then((data) => {
+        bonusStories = data;
     });
 
     loadTeams();
@@ -35,6 +40,8 @@ $( document ).ready(function() {
     }
 
     setFormEventListeners();
+
+    
 });
 
 function loadPrices(){
@@ -113,7 +120,6 @@ function getMissionDays() {
 function setFormEventListeners() {
 
     if (window.location.pathname === '/setup') {
-        $('#cuurentPrice').val(getCurrentPrice());
         updateRemoveTeamsSelect();
 
         $('#addTeamForm').on('submit', function(e) {
@@ -141,6 +147,8 @@ function setFormEventListeners() {
     }
 
     if (window.location.pathname === '/admin') {
+        $('#currentPrice').val(getCurrentPrice());
+
         console.log('Admin page');
         $('#story-complete-form').on('submit', function(e) {
             e.preventDefault();
@@ -181,9 +189,34 @@ function setFormEventListeners() {
             }
         });
 
+        $('#bonus-story-complete-form').on('submit', function(e) {
+            e.preventDefault();
+            console.log('Bonus Story Complete form submitted!');
+
+            const data = Object.fromEntries(new FormData(e.target).entries());
+            console.log(data);
+            if (data.bonusStorySecret == password){
+                let story = findBonus(data.bonusStoryDescription);
+                let team = findTeam(data.teamName);
+
+                $('#bonusStoryDescription option[value="' + story.id + '"]').prop('disabled', true);
+                for (let i = 1; i < 5; i++) {
+                    if (team.bonusStoriesCompleted.indexOf(i) === -1) {
+                        $('#bonusStoryDescription option[value="' + (i + 1) + '"]').prop('selected', true);
+                        break;
+                    }
+                    
+                }
+
+                completeBonus(data.bonusStoryDescription, data.teamName);
+            } else {
+                console.log('Incorrect password');
+            }
+        });
+
         $('#taskDescription').on('change', function(e) {
             e.preventDefault();
-            console.log('Bonus form submitted!');
+            console.log('Task selection changes!');
 
             let id = e.target.value;
             let story = findStory(id);
@@ -199,6 +232,54 @@ function setFormEventListeners() {
             }
 
             $('#taskPayout').val(value);
+        });
+
+        $('#bonusStoryTeamName').on('change', function(e) {
+            console.log("Bonus story team selected ");
+            let teamName = $('#bonusStoryTeamName').val();
+            let team = findTeam(teamName);
+
+            let select = $('#bonusStoryDescription');
+            if (select) { 
+                // get all options from the select
+                let options = select.find('option');
+
+                // loop the options. If the option value is in the team's completed bonus stories, disable the option
+                options.each(function() {
+                    let option = $(this);
+                    if (team.bonusStoriesCompleted.indexOf(option.val()) > -1) {
+                        option.prop('disabled', true);
+                    } else {
+                        option.prop('disabled', false);
+                    }
+                });
+
+                options.each(function() {
+                    // if the option isn't disabled, select it and break the loop
+                    if (!$(this).prop('disabled')) {
+                        $(this).prop('selected', true);
+                        return false;
+                    }
+                });
+            } else {
+                console.error(`Element with ID ${id} not found.`);
+            }
+            select.trigger('change');
+        });
+
+        $('#bonusStoryDescription').on('change', function(e) {
+            e.preventDefault();
+            console.log('Bonus Story selection changes!');
+
+            let id = e.target.value;
+            let story = findBonus(id);
+
+            let value = 0;
+            if (story) {
+                value = story.value;
+            }
+
+            $('#bonusStoryPayout').val(value);
         });
     }
 }
@@ -280,6 +361,35 @@ function completeStory(storyId, teamName){
     console.log("Story completed"); 
 }
 
+function completeBonus(storyId, teamName){
+    let story = findBonus(storyId);
+    let team = findTeam(teamName);
+    team.balance = parseInt(team.balance) + parseInt(story.value);
+    team.bonusStoriesCompleted.push(storyId);
+
+    $('#bonusStoryDescription option[value="' + storyId + '"]').prop('disabled', true);
+    
+    let nextBonus;
+    // find the next bonus story
+    for (let i = 0; i < bonusStories.length; i++) {
+        if (team.bonusStoriesCompleted.indexOf(bonusStories[i].id) === -1) {
+            nextBonus = bonusStories[i];
+            break;
+        }
+    }
+    
+    $('#bonusStoryDescription option[value="' + nextBonus + '"]').prop('selected', true);
+
+    if (story) {
+        value = story.value;
+    }
+
+    $('#bonusStoryPayout').val(value);
+
+    saveTeams();
+    console.log("Story completed"); 
+}
+
 function addTeam(teamData){
     let team = new Team(teamData.teamName, teamData.teamBalance);
     teams.push(team);
@@ -307,6 +417,13 @@ function findStory(storyId){
     let storyIndex = stories.findIndex(story => parseInt(story.id) === parseInt(storyId));
     if (storyIndex > -1) {
         return stories[storyIndex];
+    }
+}
+
+function findBonus(storyId){
+    let storyIndex = bonusStories.findIndex(story => parseInt(story.id) === parseInt(storyId));
+    if (storyIndex > -1) {
+        return bonusStories[storyIndex];
     }
 }
 
@@ -344,7 +461,7 @@ function fillTeamSelect(){
     if (window.location.pathname === '/setup') {
         selects = ["#removeTeamName"];
     } else if (window.location.pathname === '/admin') {
-        selects = ["#taskTeamName", "#teamCost", "#teamBonus"];
+        selects = ["#taskTeamName", "#teamCost", "#teamBonus", '#bonusStoryTeamName'];
     } 
 
     selects.forEach(id => {
@@ -385,6 +502,8 @@ function fillTeamSelect(){
                 $('#taskDescription option').each(function() {
                     if (parseInt($(this).val()) < currentStory) {
                         $(this).prop('disabled', true);
+                    } else {
+                        $(this).prop('disabled', false);
                     }
                 });
 

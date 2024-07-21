@@ -12,6 +12,7 @@ class Team {
         this.name = name;
         this.balance = startingBalance;
         this.currentStory = 1;
+        this.bonusStoriesCompleted = [];
     }
 }
 
