@@ -39,7 +39,6 @@ function loadPrices(){
     console.log("Prices loaded: ", hireCosts);
 }
 
-
 function setupDashCharts(){
     let ctx = document.getElementById('teamTotals').getContext('2d');
     let statusChart = new Chart(ctx, {
@@ -431,11 +430,8 @@ function fillHireCostsTable(){
     let i = 0;
     let lastCost = 0;
     // loop every date from the start date to now
-    for (let date = startdate; date <= enddate; date.setDate(date.getDate() + 1)) {
+    dayloop: for (let date = startdate; date <= enddate; date.setDate(date.getDate() + 1)) {
         // loop over each hour between 10am and 4pm, in 15 minute intervals
-        if (date > now) {
-            break;
-        }
         i++;
         let j = 0;
         for (let hour = 10; hour < 17; hour++) {
@@ -444,6 +440,10 @@ function fillHireCostsTable(){
                 j++;
                 let time = new Date(date);
                 time.setHours(hour, minute);
+
+                if (time > now) {
+                    break dayloop;
+                }
                 
                 let cost = hireCosts[i][j-1];
                 
