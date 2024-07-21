@@ -39,9 +39,17 @@ If making more than minor changes, see the contributing section before going fur
 
 ## Usage
 
-The current main branch build is available at [missiontomarsdash.netlify.app/](https://missiontomarsdash.netlify.app/);
+The current main branch build is available at [missiontomarsdash.netlify.app/](https://missiontomarsdash.netlify.app/).
 
-If your working locally, the most recently built version of the application can be found in the `/_site` folder. This is the folder you can copy else where, and double click the `index.html` page to launch the dashboard. You'll only need a web browser. If you can't use the live hosted site during a mission, this is how the dashboard should be used.
+If you're working locally, the most recently built version of the application can be found in the `/_site` folder. This is the folder you can copy else where, and double click the `index.html` page to launch the dashboard. You'll only need a web browser installed. If you can't use the live hosted site during a mission, this is how the dashboard should be used.
+
+To start a new mission, go to the setup tab and enter the new mission details. This will wipe all locally stored data and generate the Core Coin prices for the mission. You can then add teams.
+
+The Admin tab will allow you to administer the ongoing mission.
+
+The changing price of core coin is controlled to not get out of hand, based on the starting price. Talk to Tony or Liam if you want to tweak the way prices work. It's all configurable!
+
+If developing the site, when creating a new mission, use dates a couple days either side of todays dates.
 
 ## Deployment
 

@@ -109,6 +109,8 @@ function getMissionDays() {
 function setFormEventListeners() {
 
     if (window.location.pathname === '/setup') {
+        $('#cuurentPrice').val(getCurrentPrice());
+
         $('#addTeamForm').on('submit', function(e) {
             e.preventDefault();
             console.log('Add team form submitted!');

@@ -37,7 +37,7 @@ layout: page
                             <div class="input-group-prepend">
                               <div class="input-group-text">£</div>
                             </div>
-                            <input type="number" placeholder="0.0" name="taskPayout" id="taskPayout" class="form-control">
+                            <input type="text" placeholder="0.0" name="taskPayout" id="taskPayout" class="form-control" readonly>
                         </div>
                     </div>
                     <div class="form-group">
@@ -72,6 +72,15 @@ layout: page
                                 <option value="{{ i }}">{{ i }} Minute{% if i > 1 %}s{% endif %}</option>
                             {% endfor %}
                         </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="task-payout">Hire Price</label>
+                        <div class="input-group mb-2 mr-sm-2">
+                            <div class="input-group-prepend">
+                              <div class="input-group-text">£</div>
+                            </div>
+                            <input type="text" placeholder="0.0" name="cuurentPrice" id="cuurentPrice" class="form-control" readonly>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="cost-secret">Secret Code</label>
