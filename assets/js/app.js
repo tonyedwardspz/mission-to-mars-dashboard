@@ -110,6 +110,7 @@ function setFormEventListeners() {
 
     if (window.location.pathname === '/setup') {
         $('#cuurentPrice').val(getCurrentPrice());
+        updateRemoveTeamsSelect();
 
         $('#addTeamForm').on('submit', function(e) {
             e.preventDefault();
@@ -117,6 +118,7 @@ function setFormEventListeners() {
             const data = Object.fromEntries(new FormData(e.target).entries());
             console.log(data)
             addTeam(data);
+            updateRemoveTeamsSelect();
         });
 
         $('#remove-team-form').on('submit', function(e) {
@@ -195,6 +197,28 @@ function setFormEventListeners() {
             $('#taskPayout').val(value);
         });
     }
+}
+
+function updateRemoveTeamsSelect() {
+    try {
+        let select = document.querySelector('#removeTeamName');
+        select.innerHTML = '';
+        let defaultOption = document.createElement('option');
+        defaultOption.value = '';
+        defaultOption.text = '-- Select Team --';
+        defaultOption.disabled = true;
+        defaultOption.selected = true;
+        select.appendChild(defaultOption);
+        teams.forEach(team => {
+            let option = document.createElement('option');
+            option.value = team.name;
+            option.text = team.name;
+            select.appendChild(option);
+        });
+    } catch (e){
+        console.error('Error updating remove team select:', e);
+    }
+    
 }
 
 function newMission(missionData){
