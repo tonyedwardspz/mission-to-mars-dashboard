@@ -40,8 +40,6 @@ $( document ).ready(function() {
     }
 
     setFormEventListeners();
-
-    
 });
 
 function loadPrices(){
@@ -117,6 +115,23 @@ function getMissionDays() {
     return days;
 }
 
+function setFeedback(message, type, container) {
+
+    let alert = document.createElement('div');
+    alert.classList.add('alert');
+    alert.classList.add(`alert-${type}`);
+    alert.textContent = message;
+
+    let feedback = document.querySelector(container);
+    feedback.innerHTML = '';
+    feedback.appendChild(alert);
+
+    // remove the alert after 5 seconds
+    setTimeout(() => {
+        feedback.innerHTML = '';
+    }, 3000);
+}
+
 function setFormEventListeners() {
 
     if (window.location.pathname === '/setup') {
@@ -129,12 +144,14 @@ function setFormEventListeners() {
             console.log(data)
             addTeam(data);
             updateRemoveTeamsSelect();
+            setFeedback('Team added to current mission', 'success', '#teamAddedFeedbackContainer');
         });
 
         $('#remove-team-form').on('submit', function(e) {
             e.preventDefault();
             const data = Object.fromEntries(new FormData(e.target).entries());
             removeTeam(data.removeTeamName);
+            setFeedback('Team removed from the current mission', 'danger', '#teamRemovedFeedbackContainer');
         });
 
         // newMission
@@ -143,6 +160,7 @@ function setFormEventListeners() {
             const data = Object.fromEntries(new FormData(e.target).entries());
             console.log(data);
             newMission(data);
+            setFeedback('Mission created', 'success', '#missionFeedbackContainer');
         });
     }
 
@@ -158,8 +176,10 @@ function setFormEventListeners() {
             console.log(data);
             if (data.taskSecret == password){
                 completeStory(data.taskDescription, data.teamName);
+                setFeedback('Story completed', 'success', '#storyFeedbackContainer');
             } else {
                 console.log('Incorrect password');
+                setFeedback('Password Incomplete', 'danger', '#storyFeedbackContainer');
             }
         });
 
@@ -171,8 +191,10 @@ function setFormEventListeners() {
             console.log(data);
             if (data.costSecret == password){
                 deductCost(data.costTeam, data.costValue);
+                setFeedback('Hire cost deducted', 'success', '#hireFeedbackContainer');
             } else {
                 console.log('Incorrect password');
+                setFeedback('Password Incomplete', 'danger', '#hireFeedbackContainer');
             }
         });
 
@@ -184,8 +206,10 @@ function setFormEventListeners() {
             console.log(data);
             if (data.bonusSecret == password){
                 bonusEarned(data.bonusTeam, data.bonusPayout);
+                setFeedback('Bonus earned', 'success', '#bonusAmountFeedbackContainer');
             } else {
                 console.log('Incorrect password');
+                setFeedback('Password Incomplete', 'danger', '#bonusAmountFeedbackContainer');
             }
         });
 
@@ -205,12 +229,12 @@ function setFormEventListeners() {
                         $('#bonusStoryDescription option[value="' + (i + 1) + '"]').prop('selected', true);
                         break;
                     }
-                    
                 }
-
                 completeBonus(data.bonusStoryDescription, data.teamName);
+                setFeedback('Bonus story completed', 'success', '#bonusStoryFeedbackContainer');
             } else {
                 console.log('Incorrect password');
+                setFeedback('Password Incorrect', 'danger', '#bonusStoryFeedbackContainer');
             }
         });
 

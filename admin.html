@@ -47,6 +47,8 @@ layout: page
                     <div class="form-group">
                         <input type="submit" class="btn btn-success" value="Pay this team" />
                     </div>
+
+                    <div id="storyFeedbackContainer"></div>
                 </form>
             </div>
         </div>
@@ -89,6 +91,8 @@ layout: page
                     <div class="form-group">
                         <input type="submit" class="btn btn-danger" value="Bill this team" />
                     </div>
+
+                    <div id="hireFeedbackContainer"></div>
                 </form>
             </div>
         </div>
@@ -97,7 +101,7 @@ layout: page
     <div class="col-md-4">
         <div class="card card-success">
             <div class="card-header">
-                <h4>Bonus earned</h4>
+                <h4>Bonus Amount Earned</h4>
             </div>
             <div class="card-body">
                 <form id="bonus-earned-form">
@@ -114,7 +118,7 @@ layout: page
                                 <div class="input-group-prepend">
                                   <div class="input-group-text">£</div>
                                 </div>
-                                <input type="number" step="50" placeholder="00" name="bonusPayout" id="bonusPayout" class="form-control">
+                                <input type="number" placeholder="00" name="bonusPayout" id="bonusPayout" class="form-control">
                             </div>
                         </div>
                     </div>
@@ -125,6 +129,7 @@ layout: page
                     <div class="form-group">
                         <input type="submit" class="btn btn-success" value="Pay this team" />
                     </div>
+                    <div id="bonusAmountFeedbackContainer"></div>
                 </form>
             </div>
         </div>
@@ -133,7 +138,7 @@ layout: page
     <div class="col-md-4">
         <div class="card card-success">
             <div class="card-header">
-                <h4>Story Completed</h4>
+                <h4>Bonus Story Completed</h4>
             </div>
             <div class="card-body">
                 <form id="bonus-story-complete-form">
@@ -168,6 +173,7 @@ layout: page
                     <div class="form-group">
                         <input type="submit" class="btn btn-success" value="Pay this team!" />
                     </div>
+                    <div id="bonusStoryFeedbackContainer"></div>
                 </form>
             </div>
         </div>
