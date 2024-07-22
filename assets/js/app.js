@@ -111,23 +111,129 @@ function setupDashCharts(){
     });
 }
 
+function groupTransactionsByHour(teams) {
+    const result = {};
+
+    teams.forEach(team => {
+        const teamName = team.name;
+        const transactions = team.transactions;
+        const dailyTotals = {};
+
+        for (let date = new Date(mission.start); date <= new Date(mission.end); date.setDate(date.getDate() + 1)) {
+            if (!dailyTotals[date.getDay()]) {
+                dailyTotals[date.getDay().toString()] = {
+                    "10": 0,
+                    "11": 0,
+                    "12": 0,
+                    "13": 0,
+                    "14": 0,
+                    "15": 0,
+                    "16": 0,
+                    "17": 0 
+                };
+            }
+        }
+
+        transactions.forEach(transaction => {
+
+            const date = new Date(transaction.date);
+            const day = date.getDay();
+            const hour = date.getHours();
+            const amount = transaction.value;
+
+            if (hour >= 10 && hour < 17) {
+                if (transaction.story.toLowerCase().includes("hired") || transaction.story.toLowerCase().includes("deducted")) {
+                    dailyTotals[day.toString()][hour] -= amount;
+                } else {
+                    dailyTotals[day.toString()][hour] += parseInt(amount);
+                }
+            } else if (hour >= 17) {
+                if (transaction.story.toLowerCase().includes("hired") || transaction.story.toLowerCase().includes("deducted")) {
+                    dailyTotals[day.toString()][17] -= amount;
+                } else {
+                    dailyTotals[day.toString()][17] += parseInt(amount);
+                }
+            } else if (hour < 10) {
+                if (transaction.story.toLowerCase().includes("hired") || transaction.story.toLowerCase().includes("deducted")) {
+                    dailyTotals[day.toString()][10] -= amount;
+                } else {
+                    dailyTotals[day.toString()][10] += parseInt(amount);
+                }
+            }
+        });
+
+        // Make the data cumulative
+        let lastTotal = 0;
+        Object.keys(dailyTotals).forEach(day => {
+            Object.keys(dailyTotals[day]).forEach(hour => {
+                let total = dailyTotals[day][hour];
+                if (total !== lastTotal) {
+                    lastTotal += parseInt(total);
+                }
+                dailyTotals[day][hour] = lastTotal;
+            });
+        });
+
+        console.log("Daily totals: ", dailyTotals);
+        result[teamName] = dailyTotals;
+    });
+    return result;
+}
+
 
 function setupMissionChart(){
+    let labels = getMissionDays();
+    let groupedTransactions = groupTransactionsByHour(teams);
+    let teamName;
+    let dataset = [];
+    let missionDays = [];
+
+    for (let date = new Date(mission.start); date <= new Date(mission.end); date.setDate(date.getDate() + 1)) {
+        missionDays.push(date.getDay());
+    }
+
+    
+    Object.keys(groupedTransactions).forEach(team => {
+        let teamData = { "data": [] };
+        Object.keys(groupedTransactions[team]).forEach(day => {
+            Object.keys(groupedTransactions[team][day]).forEach(hour => {
+                teamData.data.push( { "x": hour, "y": groupedTransactions[team][day][hour] } );  
+            });
+            teamData["label"] = team;
+        });
+        dataset.push(teamData);
+    });
+    console.log("processed data: ", dataset);
+
     let ctx = document.getElementById('teamRiseFall').getContext('2d');
     let missionChart = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: getMissionDays(),
-            datasets: teams.map(team => {
-                return {
-                    label: team.name,
-                    data: [5000, team.balance],
-                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                    borderColor: 'rgba(255, 99, 132, 1)',
-                    borderWidth: 1
-                }
-            })
+            labels: labels,
+            datasets: dataset
         },
+        label: teamName,
+        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+        borderColor: 'rgba(255, 99, 132, 1)',
+        borderWidth: 1,
+        options: {
+            spanGaps: true,
+            scales: {
+                x: {
+                    type: 'time',
+                    time: {
+                        unit: 'hour',
+                        min: new Date().setHours(10, 0, 0, 0),
+                        max: new Date().setHours(17, 0, 0, 0),
+                        stepSize: 2,
+                        displayFormats: {
+                            hour: 'hA'
+                        }
+                    },
+                    parsing: false
+                }
+            }
+        }
     });
 }
 
@@ -135,14 +241,20 @@ function getMissionDays() {
     let startDate = new Date(mission.start);
     let endDate = new Date(mission.end);
     let today = new Date();
-    let days = [];
+    let labels = [];
+
     for (let date = startDate; date <= endDate; date.setDate(date.getDate() + 1)) {
-        if (date > today) {
-            break;
+        for (let hour = 10; hour < 17; hour++) {
+            let time = new Date(date);
+            time.setHours(hour, 0, 0, 0);
+            if (time > today) {
+                break;
+            }
+            labels.push(time.toLocaleString('en-UK', { weekday: 'short', hour: 'numeric', hour12: true }));
         }
-        days.push(date.toLocaleDateString());
     }
-    return days;
+
+    return labels;
 }
 
 function setFeedback(message, type, container) {
