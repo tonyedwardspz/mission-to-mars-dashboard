@@ -119,9 +119,13 @@ function groupTransactionsByHour(teams) {
         const transactions = team.transactions;
         const dailyTotals = {};
 
-        for (let date = new Date(mission.start); date <= new Date(mission.end); date.setDate(date.getDate() + 1)) {
-            if (!dailyTotals[date.getDay()]) {
-                dailyTotals[date.getDay().toString()] = {
+        let missionDays = [];
+        let count = 0;
+        for (let date = new Date(mission.start); date <= new Date(); date.setDate(date.getDate() + 1)) {
+            missionDays.push(date.getDay());
+
+            if (!dailyTotals[count]) {
+                dailyTotals[count.toString()] = {
                     "10": 0,
                     "11": 0,
                     "12": 0,
@@ -132,6 +136,7 @@ function groupTransactionsByHour(teams) {
                     "17": 0 
                 };
             }
+            count++;
         }
 
         transactions.forEach(transaction => {
@@ -140,29 +145,29 @@ function groupTransactionsByHour(teams) {
             const day = date.getDay();
             const hour = date.getHours();
             const amount = transaction.value;
+            const dayIndex = missionDays.indexOf(day);
 
             if (hour >= 10 && hour < 17) {
                 if (transaction.story.toLowerCase().includes("hired") || transaction.story.toLowerCase().includes("deducted")) {
-                    dailyTotals[day.toString()][hour] -= amount;
+                    dailyTotals[dayIndex][hour] -= amount;
                 } else {
-                    dailyTotals[day.toString()][hour] += parseInt(amount);
+                    dailyTotals[dayIndex][hour] += parseInt(amount);
                 }
             } else if (hour >= 17) {
                 if (transaction.story.toLowerCase().includes("hired") || transaction.story.toLowerCase().includes("deducted")) {
-                    dailyTotals[day.toString()][17] -= amount;
+                    dailyTotals[dayIndex][17] -= amount;
                 } else {
-                    dailyTotals[day.toString()][17] += parseInt(amount);
+                    dailyTotals[dayIndex][17] += parseInt(amount);
                 }
             } else if (hour < 10) {
                 if (transaction.story.toLowerCase().includes("hired") || transaction.story.toLowerCase().includes("deducted")) {
-                    dailyTotals[day.toString()][10] -= amount;
+                    dailyTotals[dayIndex][10] -= amount;
                 } else {
-                    dailyTotals[day.toString()][10] += parseInt(amount);
+                    dailyTotals[dayIndex][10] += parseInt(amount);
                 }
             }
         });
 
-        // Make the data cumulative
         let lastTotal = 0;
         Object.keys(dailyTotals).forEach(day => {
             Object.keys(dailyTotals[day]).forEach(hour => {
@@ -186,12 +191,6 @@ function setupMissionChart(){
     let groupedTransactions = groupTransactionsByHour(teams);
     let teamName;
     let dataset = [];
-    let missionDays = [];
-
-    for (let date = new Date(mission.start); date <= new Date(mission.end); date.setDate(date.getDate() + 1)) {
-        missionDays.push(date.getDay());
-    }
-
     
     Object.keys(groupedTransactions).forEach(team => {
         let teamData = { "data": [] };
@@ -244,7 +243,7 @@ function getMissionDays() {
     let labels = [];
 
     for (let date = startDate; date <= endDate; date.setDate(date.getDate() + 1)) {
-        for (let hour = 10; hour < 17; hour++) {
+        for (let hour = 10; hour <= 17; hour++) {
             let time = new Date(date);
             time.setHours(hour, 0, 0, 0);
             if (time > today) {
