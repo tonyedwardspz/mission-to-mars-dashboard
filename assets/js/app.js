@@ -30,7 +30,7 @@ $( document ).ready(function() {
             setupMissionChart();
         }
 
-        if (mission == {} || (new Date(mission.end) < new Date())){
+        if (mission == null){
             $('#noMissionModal').modal('show');
         }
     }
