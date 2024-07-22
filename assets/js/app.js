@@ -5,6 +5,7 @@ let password = 'secret';
 let mission = {};
 let robotHireCost = 14;
 let hireCosts = {};
+const brandColors = ["#00E2B6", "#FB48FE", "#49008A", "#01CCE5", "#010033", "#00126B"];
 
 $( document ).ready(function() {
     console.log( "ready at " + window.location.pathname);
@@ -85,10 +86,10 @@ function setupDashCharts(){
         data: {
             labels: teams.map(team => team.name),
             datasets: [{
-                label: 'Balance',
+                label: 'Current Balance',
                 data: teams.map(team => team.balance),
-                backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                borderColor: 'rgba(255, 99, 132, 1)',
+                backgroundColor: '#00E2B6',
+                borderColor: '#49008A',
                 borderWidth: 1
             }]
         },
@@ -189,7 +190,6 @@ function groupTransactionsByHour(teams) {
 function setupMissionChart(){
     let labels = getMissionDays();
     let groupedTransactions = groupTransactionsByHour(teams);
-    let teamName;
     let dataset = [];
     
     Object.keys(groupedTransactions).forEach(team => {
@@ -209,12 +209,17 @@ function setupMissionChart(){
         type: 'line',
         data: {
             labels: labels,
-            datasets: dataset
+            datasets: dataset.map((data, index) => {
+                return {
+                    label: data.label,
+                    data: data.data,
+                    backgroundColor: brandColors[index],
+                    borderColor: brandColors[index],
+                    borderWidth: 1,
+                    fill: false
+                }        
+            })
         },
-        label: teamName,
-        backgroundColor: 'rgba(255, 99, 132, 0.2)',
-        borderColor: 'rgba(255, 99, 132, 1)',
-        borderWidth: 1,
         options: {
             spanGaps: true,
             scales: {
