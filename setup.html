@@ -101,6 +101,32 @@ layout: page
         </div>
     </div>
 
+    <div class="col-md-6">
+        <div class="card card-info">
+            <div class="card-header">
+                <h4>Edit team name</h4>
+            </div>
+            <div class="card-body">
+                <form id="edit-team-form">
+                    <div class="form-group">
+                        <label for="editTeamName">Team name</label>
+                        <select name="editTeamName" id="editTeamName" class="form-control">
+                            
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="teamName">Team name</label>
+                        <input type="text" id="updatedTeamName" name="updatedTeamName" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" class="btn btn-danger btn-block" value="Edit Team Name" />
+                    </div>
+                    <div id="teamEditedFeedbackContainer"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <div class="col-md-12">
         <div class="card card-info">
             <div class="card-body">

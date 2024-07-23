@@ -301,13 +301,29 @@ function setFormEventListeners() {
             setFeedback('Team removed from the current mission', 'danger', '#teamRemovedFeedbackContainer');
         });
 
-        // newMission
         $('#newMission').on('submit', function(e) {
             e.preventDefault();
             const data = Object.fromEntries(new FormData(e.target).entries());
             console.log(data);
             newMission(data);
             setFeedback('Mission created', 'success', '#missionFeedbackContainer');
+        });
+
+        $('#edit-team-form').on('submit', function(e) {
+            e.preventDefault();
+            const data = Object.fromEntries(new FormData(e.target).entries());
+            console.log(data);
+            let team = findTeam(data.editTeamName);
+            team.name = data.updatedTeamName;
+            teams[teams.findIndex(t => t.name === data.editTeamName)] = team;
+            saveTeams();
+            fillTeamSelect();
+            setFeedback('Team Edit Saved', 'success', '#teamEditedFeedbackContainer');
+        });
+
+        $('#editTeamName').on('change', function(e) {
+            let teamName = $('#editTeamName').val();
+            $('#updatedTeamName').val(teamName);
         });
     }
 
@@ -635,7 +651,7 @@ function fillTeamSelect(){
 
     let selects = [];
     if (window.location.pathname === '/setup') {
-        selects = ["#removeTeamName"];
+        selects = ["#removeTeamName", "#editTeamName"];
     } else if (window.location.pathname === '/admin') {
         selects = ["#taskTeamName", "#teamCost", "#teamBonus", '#bonusStoryTeamName'];
     } 
