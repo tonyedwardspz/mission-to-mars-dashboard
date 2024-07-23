@@ -48,28 +48,29 @@ layout: page
             </div>
 
             <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Description</th>
+                                <th>Acceptance Criteria</th>
+                                <th>Value</th>
+                            </tr>
+                        </thead>
 
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Description</th>
-                            <th>Acceptance Criteria</th>
-                            <th>Value</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        {% for story in site.data.stories.bonusStories %}
-                        <tr class="story">
-                            <td>{{ story.id }}</td>
-                            <td>{{ story.description }}</td>
-                            <td>{{ story.acceptance }}</td>
-                            <td>{{ story.value }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                        <tbody>
+                            {% for story in site.data.stories.bonusStories %}
+                            <tr class="story">
+                                <td>{{ story.id }}</td>
+                                <td>{{ story.description }}</td>
+                                <td>{{ story.acceptance }}</td>
+                                <td>{{ story.value }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>  
