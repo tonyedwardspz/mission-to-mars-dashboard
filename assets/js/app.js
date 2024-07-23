@@ -95,18 +95,14 @@ function setupDashCharts(){
         },
         options: {
             scales: {
-                x: {
-                    title: {
-                        display: true,
-                        text: 'Teams'
-                    }
-                },
-                y: {
-                    title: {
-                        display: true,
-                        text: 'Balance'
-                    }
-                }
+                xAxes: [{
+                    
+                }],
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true,
+                        },
+                }]
             }
         }
     });
@@ -322,6 +318,7 @@ function setFormEventListeners() {
         });
 
         $('#editTeamName').on('change', function(e) {
+            e.preventDefault();
             let teamName = $('#editTeamName').val();
             $('#updatedTeamName').val(teamName);
         });
