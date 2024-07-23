@@ -5,7 +5,7 @@ let password = 'secret';
 let mission = {};
 let robotHireCost = 14;
 let hireCosts = {};
-const brandColors = ["#00E2B6", "#FB48FE", "#49008A", "#01CCE5", "#010033", "#00126B"];
+const brandColors = ["#00E2B6", "#FB48FE", "#010033", "#49008A", "#01CCE5", "#00126B", "#00E2B6", "#FB48FE", "#010033", "#49008A", "#01CCE5", "#00126B"];
 
 $( document ).ready(function() {
     console.log( "ready at " + window.location.pathname);
@@ -86,10 +86,10 @@ function setupDashCharts(){
         data: {
             labels: teams.map(team => team.name),
             datasets: [{
-                label: 'Current Balance',
+                label: "Current balance",
                 data: teams.map(team => team.balance),
-                backgroundColor: '#00E2B6',
-                borderColor: '#49008A',
+                backgroundColor: brandColors,
+                borderColor: '#00E2B6',
                 borderWidth: 1
             }]
         },
@@ -580,7 +580,7 @@ function completeBonus(storyId, teamName){
 function addTeam(teamData){
     let team = new Team(teamData.teamName, teamData.teamBalance);
     team = createTransaction(team, "Starting Balance", teamData.teamBalance);
-
+    team.color = brandColors[teams.length];
     teams.push(team);
     console.log(teams);
     saveTeams();

@@ -14,6 +14,7 @@ class Team {
         this.currentStory = 1;
         this.bonusStoriesCompleted = [];
         this.transactions = [];
+        this.color = '';
     }
 }
 
