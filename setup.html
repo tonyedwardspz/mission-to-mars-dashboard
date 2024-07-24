@@ -115,7 +115,7 @@ layout: page
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="teamName">Team name</label>
+                        <label for="teamName">Updated Team name</label>
                         <input type="text" id="updatedTeamName" name="updatedTeamName" class="form-control" />
                     </div>
                     <div class="form-group">
@@ -130,12 +130,12 @@ layout: page
     <div class="col-md-12">
         <div class="card card-info">
             <div class="card-body">
-                <a id="downloadAnchorElem" class="btn btn-primary">Export mission json</a>
+                <p><a id="downloadAnchorElem" class="btn btn-primary">Export Mission JSON</a></p>
 
                 <form id="jsonUploadForm">
                     <div class="input-group mb-3">
                         <div class="custom-file">
-                            <label class="custom-file-label" for="inputGroupFile02" aria-describedby="inputGroupFileAddon02">Choose file</label>
+                            <label class="custom-file-label" for="inputGroupFile02" aria-describedby="inputGroupFileAddon02">Import Mission JSON</label>
                             <input type="file" class="custom-file-input" id="jsonImportSelect" style="cursor:pointer;" />
                         </div>
                         <div class="input-group-append">
@@ -143,7 +143,29 @@ layout: page
                         </div>
                     </div>
                 </form>
+
+                <input type="submit" class="btn btn-danger" value="Reset Mission" id="resetDashboard" />
             </div>
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="deleteDatanModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">No mission in progress</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>This will delete all data for the current mission. Are you sure you want to proceed</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+          <button class="btn btn-danger" id="resetDataConfirmed" >Reset Dashboard</a>
+        </div>
+      </div>
+    </div>
+  </div>

@@ -374,6 +374,18 @@ function setFormEventListeners() {
             console.log('Importing JSON now');
             importJson(e);
         });
+
+        $('#resetDashboard').on('click', function(e) {
+            e.preventDefault();
+            console.log('Are you sure you want to reset all data?');
+            $('#deleteDatanModal').modal('show');
+            
+        });
+
+        $('#resetDataConfirmed').on('click', function(e) {
+            console.log('Resetting data');
+            resetData();
+        });
     }
 
     if (window.location.pathname === '/admin') {
