@@ -21,23 +21,27 @@ layout: page
                         <label for="MissionName">Mission name</label>
                         <input type="text" id="missionName" name="missionName" class="form-control" required />
                     </div>
-                    <div class="form-group">
-                        <label for="startDate">Start date</label>
-                        <input type="date" id="startDate" name="startDate" class="form-control" required />
-                    </div>
-                    <div class="form-group">
-                        <label for="endDate">End date</label>
-                        <input type="date" id="endDate" name="endDate" class="form-control" required />
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="startDate">Start date</label>
+                            <input type="date" id="startDate" name="startDate" class="form-control" required />
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="endDate">End date</label>
+                            <input type="date" id="endDate" name="endDate" class="form-control" required />
+                        </div>
                     </div>
 
-                    <div class="form-group">
-                        <label for="coreCoinPrice">Core Coin Starting Price</label>
-                        <div class="input-group mb-2 mr-sm-2">
-                            <div class="input-group-prepend">
-                              <div class="input-group-text">£</div>
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <label for="coreCoinPrice">Core Coin Starting Price</label>
+                            <div class="input-group mb-2 mr-sm-2">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">£</div>
+                                </div>
+                                <input type="number" id="coreCoinPrice" name="coreCoinPrice" class="form-control" value="75" />
                             </div>
-                            <input type="number" id="coreCoinPrice" name="coreCoinPrice" class="form-control" value="75" />
-                          </div>
+                        </div>
                     </div>
                     <div class="form-group">
                         <input type="submit" class="btn btn-success" value="Start Mission!" />
