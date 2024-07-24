@@ -40,6 +40,10 @@ $( document ).ready(function() {
         fillHireCostsTable();
     }
 
+    if (window.location.pathname === '/setup') {
+        bsCustomFileInput.init();
+    }
+
     setFormEventListeners();
 });
 
@@ -62,6 +66,28 @@ function createExportJson() {
     var dlAnchorElem = document.getElementById('downloadAnchorElem');
     dlAnchorElem.setAttribute("href", dataStr );
     dlAnchorElem.setAttribute("download", "M2M Export" + Date() + ".json");
+}
+
+function importJson(event) {
+    console.log("Importing JSON");
+    var fileInput = document.getElementById('jsonImportSelect');
+    
+    var file = fileInput.files[0];
+    var reader = new FileReader();
+    reader.onload = function(e) {
+        var contents = e.target.result;
+        var data = JSON.parse(contents);
+        console.log(data);
+        teams = data.teams;
+        mission = data.mission;
+        hireCosts = data.hireCosts;
+        saveTeams();
+        saveMission();
+        saveCosts();
+        console.log("Data imported");
+        // window.location.reload();
+    };
+    reader.readAsText(file);
 }
 
 function createTransaction(team, story, value){
@@ -274,6 +300,14 @@ function setFeedback(message, type, container) {
     }, 3000);
 }
 
+// a function that resets all data in the app.
+function resetData() {
+    localStorage.removeItem('teams');
+    localStorage.removeItem('mission');
+    localStorage.removeItem('prices');
+    location.reload();
+}
+
 function setFormEventListeners() {
 
     if (window.location.pathname === '/setup') {
@@ -317,10 +351,28 @@ function setFormEventListeners() {
             setFeedback('Team Edit Saved', 'success', '#teamEditedFeedbackContainer');
         });
 
+        $('#edit-team-form').on('submit', function(e) {
+            e.preventDefault();
+            const data = Object.fromEntries(new FormData(e.target).entries());
+            console.log(data);
+            let team = findTeam(data.editTeamName);
+            team.name = data.updatedTeamName;
+            teams[teams.findIndex(t => t.name === data.editTeamName)] = team;
+            saveTeams();
+            fillTeamSelect();
+            setFeedback('Team Edit Saved', 'success', '#teamEditedFeedbackContainer');
+        });
+
         $('#editTeamName').on('change', function(e) {
             e.preventDefault();
             let teamName = $('#editTeamName').val();
             $('#updatedTeamName').val(teamName);
+        });
+
+        $('#jsonUploadForm').on('submit', function(e) {
+            e.preventDefault();
+            console.log('Importing JSON now');
+            importJson(e);
         });
     }
 
