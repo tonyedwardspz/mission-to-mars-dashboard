@@ -19,15 +19,15 @@ layout: page
                 <form id="newMission">
                     <div class="form-group">
                         <label for="MissionName">Mission name</label>
-                        <input type="text" id="missionName" name="missionName" class="form-control" />
+                        <input type="text" id="missionName" name="missionName" class="form-control" required />
                     </div>
                     <div class="form-group">
                         <label for="startDate">Start date</label>
-                        <input type="date" id="startDate" name="startDate" class="form-control" />
+                        <input type="date" id="startDate" name="startDate" class="form-control" required />
                     </div>
                     <div class="form-group">
                         <label for="endDate">End date</label>
-                        <input type="date" id="endDate" name="endDate" class="form-control" />
+                        <input type="date" id="endDate" name="endDate" class="form-control" required />
                     </div>
 
                     <div class="form-group">
@@ -57,7 +57,7 @@ layout: page
                 <form id="addTeamForm">
                     <div class="form-group">
                         <label for="teamName">Team name</label>
-                        <input type="text" id="teamName" name="teamName" class="form-control" />
+                        <input type="text" id="teamName" name="teamName" class="form-control" required/>
                     </div>
                     <div class="form-group">
                         <label for="teamBalance">Starting balance</label>
@@ -93,7 +93,7 @@ layout: page
                         </select>
                     </div>
                     <div class="form-group">
-                        <input type="submit" class="btn btn-danger btn-block" value="Remove Team!" />
+                        <input type="submit" class="btn btn-danger btn-block" value="Remove Team!"  />
                     </div>
                     <div id="teamRemovedFeedbackContainer"></div>
                 </form>
@@ -116,7 +116,7 @@ layout: page
                     </div>
                     <div class="form-group">
                         <label for="teamName">Updated Team name</label>
-                        <input type="text" id="updatedTeamName" name="updatedTeamName" class="form-control" />
+                        <input type="text" id="updatedTeamName" name="updatedTeamName" class="form-control" required/>
                     </div>
                     <div class="form-group">
                         <input type="submit" class="btn btn-danger btn-block" value="Edit Team Name" />
