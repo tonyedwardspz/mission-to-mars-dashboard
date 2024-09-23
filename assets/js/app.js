@@ -1,12 +1,16 @@
 // Instead, ensure these functions are globally available
 
-let stories = [];
-let bonusStories = [];
-let teams = [];
+//let stories = [];
+// Instead, ensure these functions are globally available
+
+if (typeof bonusStories === 'undefined') {
+    var bonusStories = [];
+    var teams = [];
+    var mission = {};
+    var hireCosts = {};
+}
 let password = 'secret';
-let mission = {};
 let robotHireCost = 14;
-let hireCosts = {};
 const brandColors = ["#00E2B6", "#FB48FE", "#010033", "#49008A", "#01CCE5", "#00126B", "#00E2B6", "#FB48FE", "#010033", "#49008A", "#01CCE5", "#00126B"];
 
 $( document ).ready(function() {
