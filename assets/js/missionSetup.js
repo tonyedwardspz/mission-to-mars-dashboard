@@ -1,5 +1,3 @@
-import { saveJsonToLocalStorage, loadJsonFromLocalStorage } from './FileFunctions.js';
-
 function setupNewMission(missionData) {
     const mission = new Mission(
         missionData.name,

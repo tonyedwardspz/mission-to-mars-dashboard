@@ -1,4 +1,4 @@
-export class Story {
+class Story {
     constructor(id, description, acceptance, value) {
         this.id = id;
         this.description = description;
@@ -7,7 +7,7 @@ export class Story {
     }
 }
 
-export class Team {
+class Team {
     constructor(name, startingBalance) {
         this.name = name;
         this.balance = startingBalance;
@@ -18,7 +18,7 @@ export class Team {
     }
 }
 
-export class Mission {
+class Mission {
     constructor(name, start, end, price) {
         this.name = name;
         this.start = start;
