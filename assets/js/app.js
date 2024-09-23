@@ -1,4 +1,3 @@
-
 var bonusStories = [];
 var teams = [];
 var mission = {};
@@ -344,7 +343,7 @@ function setFormEventListeners() {
                 setFeedback('Story completed', 'success', '#storyFeedbackContainer');
             } else {
                 console.log('Incorrect password');
-                setFeedback('Password Incomplete', 'danger', '#storyFeedbackContainer');
+                setFeedback('Password incorrect', 'danger', '#storyFeedbackContainer');
             }
         });
 
@@ -359,7 +358,7 @@ function setFormEventListeners() {
                 setFeedback('Hire cost deducted', 'success', '#hireFeedbackContainer');
             } else {
                 console.log('Incorrect password');
-                setFeedback('Password Incomplete', 'danger', '#hireFeedbackContainer');
+                setFeedback('Password incorrect', 'danger', '#hireFeedbackContainer');
             }
         });
 
@@ -374,7 +373,7 @@ function setFormEventListeners() {
                 setFeedback('Bonus earned', 'success', '#bonusAmountFeedbackContainer');
             } else {
                 console.log('Incorrect password');
-                setFeedback('Password Incomplete', 'danger', '#bonusAmountFeedbackContainer');
+                setFeedback('Password incorrect', 'danger', '#bonusAmountFeedbackContainer');
             }
         });
 
@@ -395,13 +394,15 @@ function setFormEventListeners() {
                         team.balance += story.payout;
                         createTransaction(team, story.description, story.payout);
                         saveTeams();
+                        ////$('#bonusStoryDescription option[value="' + (i + 1) + '"]').prop('selected', true);
                         break;
                     }
                 }
+                ////completeBonus(data.bonusStoryDescription, data.teamName);
                 setFeedback('Bonus story completed', 'success', '#bonusStoryFeedbackContainer');
             } else {
                 console.log('Incorrect password');
-                setFeedback('Password Incomplete', 'danger', '#bonusStoryFeedbackContainer');
+                setFeedback('Password incorrect', 'danger', '#bonusStoryFeedbackContainer');
             }
         });
     }
