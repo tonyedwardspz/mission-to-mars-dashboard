@@ -49,12 +49,17 @@ $( document ).ready(function() {
 
     setFormEventListeners();
 });
+function showErrorModal(message) {
+    console.error(message);
+    $('#errorModal').modal('show');
+    $('#errorModalBody').text(message);
+}
 
 function loadPrices(){
     let pricesJson = loadJsonFromLocalStorage('prices');
     if (pricesJson) {
-        hireCosts = JSON.parse(pricesJson);
-        console.log("Prices loaded: ", hireCosts);
+            hireCosts = JSON.parse(pricesJson);
+            console.log("Prices loaded: ", hireCosts);
     } else {
         showErrorModal("Failed to load prices from local storage");
     }
@@ -739,6 +744,7 @@ function fillHireCostsTable(){
         }
         costsTable.push({date: "Date", time: "Time" , cost: "Price", diff: "Difference"});
     }
+
 
     let table = document.querySelector('#hireCostsTable');
     table.innerHTML = '';
