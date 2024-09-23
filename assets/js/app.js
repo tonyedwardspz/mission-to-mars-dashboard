@@ -1,3 +1,5 @@
+// Instead, ensure these functions are globally available
+
 let stories = [];
 let bonusStories = [];
 let teams = [];
@@ -12,10 +14,14 @@ $( document ).ready(function() {
 
     loadStories().then((data) => {
         stories = data;
+    }).catch(error => {
+        showErrorModal("Failed to load stories: " + error);
     });
 
     loadBonusStories().then((data) => {
         bonusStories = data;
+    }).catch(error => {
+        showErrorModal("Failed to load bonus stories: " + error);
     });
 
     loadTeams();
@@ -49,8 +55,12 @@ $( document ).ready(function() {
 
 function loadPrices(){
     let pricesJson = loadJsonFromLocalStorage('prices');
-    hireCosts = JSON.parse(pricesJson);
-    console.log("Prices loaded: ", hireCosts);
+    if (pricesJson) {
+        hireCosts = JSON.parse(pricesJson);
+        console.log("Prices loaded: ", hireCosts);
+    } else {
+        showErrorModal("Failed to load prices from local storage");
+    }
 }
 
 function createExportJson() {
@@ -450,84 +460,176 @@ function setFormEventListeners() {
                 $('#bonusStoryDescription option[value="' + story.id + '"]').prop('disabled', true);
                 for (let i = 1; i < 5; i++) {
                     if (team.bonusStoriesCompleted.indexOf(i) === -1) {
-                        $('#bonusStoryDescription option[value="' + (i + 1) + '"]').prop('selected', true);
+                        team.bonusStoriesCompleted.push(i);
+                        team.balance += story.payout;
+                        createTransaction(team, story.description, story.payout);
+                        saveTeams();
                         break;
                     }
                 }
-                completeBonus(data.bonusStoryDescription, data.teamName);
                 setFeedback('Bonus story completed', 'success', '#bonusStoryFeedbackContainer');
             } else {
                 console.log('Incorrect password');
-                setFeedback('Password Incorrect', 'danger', '#bonusStoryFeedbackContainer');
+                setFeedback('Password Incomplete', 'danger', '#bonusStoryFeedbackContainer');
             }
         });
+    }
+}
 
-        $('#taskDescription').on('change', function(e) {
+function setFormEventListeners() {
+
+    if (window.location.pathname === '/setup') {
+        updateRemoveTeamsSelect();
+        createExportJson();
+
+        $('#addTeamForm').on('submit', function(e) {
             e.preventDefault();
-            console.log('Task selection changes!');
-
-            let id = e.target.value;
-            let story = findStory(id);
-            let teamName = $('#taskTeamName').val();
-            let team = findTeam(teamName);
-
-            $('#task-description option[value="' + story.id + '"]').prop('disabled', true);
-            $('#task-description option[value="' + team.currentStory + '"]').prop('selected', true);
-
-            let value = 0;
-            if (story) {
-                value = story.value;
-            }
-
-            $('#taskPayout').val(value);
+            console.log('Add team form submitted!');
+            const data = Object.fromEntries(new FormData(e.target).entries());
+            console.log(data)
+            addTeam(data);
+            updateRemoveTeamsSelect();
+            setFeedback('Team added to current mission', 'success', '#teamAddedFeedbackContainer');
         });
 
-        $('#bonusStoryTeamName').on('change', function(e) {
-            console.log("Bonus story team selected ");
-            let teamName = $('#bonusStoryTeamName').val();
-            let team = findTeam(teamName);
+        $('#remove-team-form').on('submit', function(e) {
+            e.preventDefault();
+            const data = Object.fromEntries(new FormData(e.target).entries());
+            removeTeam(data.removeTeamName);
+            setFeedback('Team removed from the current mission', 'danger', '#teamRemovedFeedbackContainer');
+        });
 
-            let select = $('#bonusStoryDescription');
-            if (select) { 
-                // get all options from the select
-                let options = select.find('option');
+        $('#newMission').on('submit', function(e) {
+            e.preventDefault();
+            const data = Object.fromEntries(new FormData(e.target).entries());
+            console.log(data);
+            newMission(data);
+            setFeedback('Mission created', 'success', '#missionFeedbackContainer');
+        });
 
-                // loop the options. If the option value is in the team's completed bonus stories, disable the option
-                options.each(function() {
-                    let option = $(this);
-                    if (team.bonusStoriesCompleted.indexOf(option.val()) > -1) {
-                        option.prop('disabled', true);
-                    } else {
-                        option.prop('disabled', false);
-                    }
-                });
+        $('#edit-team-form').on('submit', function(e) {
+            e.preventDefault();
+            const data = Object.fromEntries(new FormData(e.target).entries());
+            console.log(data);
+            let team = findTeam(data.editTeamName);
+            team.name = data.updatedTeamName;
+            teams[teams.findIndex(t => t.name === data.editTeamName)] = team;
+            saveTeams();
+            fillTeamSelect();
+            setFeedback('Team Edit Saved', 'success', '#teamEditedFeedbackContainer');
+        });
 
-                options.each(function() {
-                    // if the option isn't disabled, select it and break the loop
-                    if (!$(this).prop('disabled')) {
-                        $(this).prop('selected', true);
-                        return false;
-                    }
-                });
+        $('#edit-team-form').on('submit', function(e) {
+            e.preventDefault();
+            const data = Object.fromEntries(new FormData(e.target).entries());
+            console.log(data);
+            let team = findTeam(data.editTeamName);
+            team.name = data.updatedTeamName;
+            teams[teams.findIndex(t => t.name === data.editTeamName)] = team;
+            saveTeams();
+            fillTeamSelect();
+            setFeedback('Team Edit Saved', 'success', '#teamEditedFeedbackContainer');
+        });
+
+        $('#editTeamName').on('change', function(e) {
+            e.preventDefault();
+            let teamName = $('#editTeamName').val();
+            $('#updatedTeamName').val(teamName);
+        });
+
+        $('#jsonUploadForm').on('submit', function(e) {
+            e.preventDefault();
+            console.log('Importing JSON now');
+            importJson(e);
+        });
+
+        $('#resetDashboard').on('click', function(e) {
+            e.preventDefault();
+            console.log('Are you sure you want to reset all data?');
+            $('#deleteDatanModal').modal('show');
+            
+        });
+
+        $('#resetDataConfirmed').on('click', function(e) {
+            console.log('Resetting data');
+            resetData();
+        });
+    }
+
+    if (window.location.pathname === '/admin') {
+        $('#currentPrice').val(getCurrentPrice());
+
+        console.log('Admin page');
+        $('#story-complete-form').on('submit', function(e) {
+            e.preventDefault();
+            console.log('Story Complete form submitted!');
+
+            const data = Object.fromEntries(new FormData(e.target).entries());
+            console.log(data);
+            if (data.taskSecret == password){
+                completeStory(data.taskDescription, data.teamName);
+                setFeedback('Story completed', 'success', '#storyFeedbackContainer');
             } else {
-                console.error(`Element with ID ${id} not found.`);
+                console.log('Incorrect password');
+                setFeedback('Password Incomplete', 'danger', '#storyFeedbackContainer');
             }
-            select.trigger('change');
         });
 
-        $('#bonusStoryDescription').on('change', function(e) {
+        $('#cost-incurred-form').on('submit', function(e) {
             e.preventDefault();
-            console.log('Bonus Story selection changes!');
+            console.log('Cost Incurred form submitted!');
 
-            let id = e.target.value;
-            let story = findBonus(id);
-
-            let value = 0;
-            if (story) {
-                value = story.value;
+            const data = Object.fromEntries(new FormData(e.target).entries());
+            console.log(data);
+            if (data.costSecret == password){
+                deductCost(data.costTeam, data.costValue);
+                setFeedback('Hire cost deducted', 'success', '#hireFeedbackContainer');
+            } else {
+                console.log('Incorrect password');
+                setFeedback('Password Incomplete', 'danger', '#hireFeedbackContainer');
             }
+        });
 
-            $('#bonusStoryPayout').val(value);
+        $('#bonus-earned-form').on('submit', function(e) {
+            e.preventDefault();
+            console.log('Bonus form submitted!');
+
+            const data = Object.fromEntries(new FormData(e.target).entries());
+            console.log(data);
+            if (data.bonusSecret == password){
+                bonusEarned(data.bonusTeam, data.bonusPayout);
+                setFeedback('Bonus earned', 'success', '#bonusAmountFeedbackContainer');
+            } else {
+                console.log('Incorrect password');
+                setFeedback('Password Incomplete', 'danger', '#bonusAmountFeedbackContainer');
+            }
+        });
+
+        $('#bonus-story-complete-form').on('submit', function(e) {
+            e.preventDefault();
+            console.log('Bonus Story Complete form submitted!');
+
+            const data = Object.fromEntries(new FormData(e.target).entries());
+            console.log(data);
+            if (data.bonusStorySecret == password){
+                let story = findBonus(data.bonusStoryDescription);
+                let team = findTeam(data.teamName);
+
+                $('#bonusStoryDescription option[value="' + story.id + '"]').prop('disabled', true);
+                for (let i = 1; i < 5; i++) {
+                    if (team.bonusStoriesCompleted.indexOf(i) === -1) {
+                        team.bonusStoriesCompleted.push(i);
+                        team.balance += story.payout;
+                        createTransaction(team, story.description, story.payout);
+                        saveTeams();
+                        break;
+                    }
+                }
+                setFeedback('Bonus story completed', 'success', '#bonusStoryFeedbackContainer');
+            } else {
+                console.log('Incorrect password');
+                setFeedback('Password Incomplete', 'danger', '#bonusStoryFeedbackContainer');
+            }
         });
     }
 }
@@ -696,7 +798,7 @@ function saveMission(){
     saveJsonToLocalStorage(missionJson, 'mission');
 }
 
-function loadMission(){
+function loadMission() {
     let missionJson = loadJsonFromLocalStorage('mission');
     mission = JSON.parse(missionJson);
     console.log("Mission loaded: ", mission);
