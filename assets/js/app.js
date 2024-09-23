@@ -395,15 +395,15 @@ function setFormEventListeners() {
                 $('#bonusStoryDescription option[value="' + story.id + '"]').prop('disabled', true);
                 for (let i = 1; i < 5; i++) {
                     if (team.bonusStoriesCompleted.indexOf(i) === -1) {
-                        team.bonusStoriesCompleted.push(i);
+                        /*team.bonusStoriesCompleted.push(i);
                         team.balance += story.payout;
                         createTransaction(team, story.description, story.payout);
-                        saveTeams();
-                        ////$('#bonusStoryDescription option[value="' + (i + 1) + '"]').prop('selected', true);
+                        saveTeams();*/
+                        $('#bonusStoryDescription option[value="' + (i + 1) + '"]').prop('selected', true);
                         break;
                     }
                 }
-                ////completeBonus(data.bonusStoryDescription, data.teamName);
+                completeBonus(data.bonusStoryDescription, data.teamName);
                 setFeedback('Bonus story completed', 'success', '#bonusStoryFeedbackContainer');
             } else {
                 console.log('Incorrect password');
