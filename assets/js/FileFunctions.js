@@ -64,8 +64,3 @@ function loadJsonFromLocalStorage(key) {
     }
 }
 
-// Make functions globally available
-window.saveJsonToLocalStorage = saveJsonToLocalStorage;
-window.loadJsonFromLocalStorage = loadJsonFromLocalStorage;
-window.loadStories = loadStories;
-window.loadBonusStories = loadBonusStories;

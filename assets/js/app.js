@@ -1,14 +1,8 @@
-// Instead, ensure these functions are globally available
 
-//let stories = [];
-// Instead, ensure these functions are globally available
-
-if (typeof bonusStories === 'undefined') {
-    var bonusStories = [];
-    var teams = [];
-    var mission = {};
-    var hireCosts = {};
-}
+var bonusStories = [];
+var teams = [];
+var mission = {};
+var hireCosts = {};
 let password = 'secret';
 let robotHireCost = 14;
 const brandColors = ["#00E2B6", "#FB48FE", "#010033", "#49008A", "#01CCE5", "#00126B", "#00E2B6", "#FB48FE", "#010033", "#49008A", "#01CCE5", "#00126B"];
@@ -119,34 +113,34 @@ function createTransaction(team, story, value){
     return team;
 }
 
-function setupDashCharts(){
-    let ctx = document.getElementById('teamTotals').getContext('2d');
-    let statusChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: teams.map(team => team.name),
-            datasets: [{
-                label: "Current balance",
-                data: teams.map(team => team.balance),
-                backgroundColor: brandColors,
-                borderColor: '#00E2B6',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            scales: {
-                xAxes: [{
+// function setupDashCharts(){
+//     let ctx = document.getElementById('teamTotals').getContext('2d');
+//     let statusChart = new Chart(ctx, {
+//         type: 'bar',
+//         data: {
+//             labels: teams.map(team => team.name),
+//             datasets: [{
+//                 label: "Current balance",
+//                 data: teams.map(team => team.balance),
+//                 backgroundColor: brandColors,
+//                 borderColor: '#00E2B6',
+//                 borderWidth: 1
+//             }]
+//         },
+//         options: {
+//             scales: {
+//                 xAxes: [{
                     
-                }],
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true,
-                        },
-                }]
-            }
-        }
-    });
-}
+//                 }],
+//                 yAxes: [{
+//                     ticks: {
+//                         beginAtZero: true,
+//                         },
+//                 }]
+//             }
+//         }
+//     });
+// }
 
 function groupTransactionsByHour(teams) {
     const result = {};
@@ -220,61 +214,6 @@ function groupTransactionsByHour(teams) {
         result[teamName] = dailyTotals;
     });
     return result;
-}
-
-
-function setupMissionChart(){
-    let labels = getMissionDays();
-    let groupedTransactions = groupTransactionsByHour(teams);
-    let dataset = [];
-    
-    Object.keys(groupedTransactions).forEach(team => {
-        let teamData = { "data": [] };
-        Object.keys(groupedTransactions[team]).forEach(day => {
-            Object.keys(groupedTransactions[team][day]).forEach(hour => {
-                teamData.data.push( { "x": hour, "y": groupedTransactions[team][day][hour] } );  
-            });
-            teamData["label"] = team;
-        });
-        dataset.push(teamData);
-    });
-    console.log("processed data: ", dataset);
-
-    let ctx = document.getElementById('teamRiseFall').getContext('2d');
-    let missionChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: labels,
-            datasets: dataset.map((data, index) => {
-                return {
-                    label: data.label,
-                    data: data.data,
-                    backgroundColor: brandColors[index],
-                    borderColor: brandColors[index],
-                    borderWidth: 1,
-                    fill: false
-                }        
-            })
-        },
-        options: {
-            spanGaps: true,
-            scales: {
-                x: {
-                    type: 'time',
-                    time: {
-                        unit: 'hour',
-                        min: new Date().setHours(10, 0, 0, 0),
-                        max: new Date().setHours(17, 0, 0, 0),
-                        stepSize: 2,
-                        displayFormats: {
-                            hour: 'hA'
-                        }
-                    },
-                    parsing: false
-                }
-            }
-        }
-    });
 }
 
 function getMissionDays() {
