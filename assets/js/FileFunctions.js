@@ -64,3 +64,191 @@ function loadJsonFromLocalStorage(key) {
     }
 }
 
+function loadPrices(){
+    let pricesJson = loadJsonFromLocalStorage('prices');
+    if (pricesJson) {
+        hireCosts = JSON.parse(pricesJson);
+        console.log("Prices loaded: ", hireCosts);
+    } else if (mission.length > 0) {
+        showErrorModal("Failed to load prices from local storage");
+    } else {
+        console.log("No prices found in local storage, but no mission in progress");
+    }
+}
+
+
+function createExportJson() {
+
+    console.log("Setting up export");
+    let exportData = {
+        teams: teams,
+        mission: mission,
+        hireCosts: hireCosts
+    };
+
+    var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportData, null, 4));
+    var dlAnchorElem = document.getElementById('downloadAnchorElem');
+    dlAnchorElem.setAttribute("href", dataStr );
+    dlAnchorElem.setAttribute("download", "M2M Export" + Date() + ".json");
+}
+
+
+function importJson(event) {
+    console.log("Importing JSON");
+    var fileInput = document.getElementById('jsonImportSelect');
+    
+    var file = fileInput.files[0];
+    var reader = new FileReader();
+    reader.onload = function(e) {
+        var contents = e.target.result;
+        var data = JSON.parse(contents);
+        console.log(data);
+        teams = data.teams;
+        mission = data.mission;
+        hireCosts = data.hireCosts;
+        saveTeams();
+        saveMission();
+        saveCosts();
+        console.log("Data imported");
+        // window.location.reload();
+    };
+    reader.readAsText(file);
+}
+
+function resetData() {
+    localStorage.removeItem('teams');
+    localStorage.removeItem('mission');
+    localStorage.removeItem('prices');
+    location.reload();
+}
+
+
+function findTeam(teamName){
+    let teamIndex = teams.findIndex(team => team.name.toLowerCase() === teamName.toLowerCase());
+    if (teamIndex > -1) {
+        return teams[teamIndex];
+    }
+}
+
+function findStory(storyId){
+    let storyIndex = stories.findIndex(story => parseInt(story.id) === parseInt(storyId));
+    if (storyIndex > -1) {
+        return stories[storyIndex];
+    }
+}
+
+function findBonus(storyId){
+    let storyIndex = bonusStories.findIndex(story => parseInt(story.id) === parseInt(storyId));
+    if (storyIndex > -1) {
+        return bonusStories[storyIndex];
+    }
+}
+
+function saveTeams(){
+    let teamsJson = JSON.stringify(teams);
+    saveJsonToLocalStorage(teamsJson, 'teams');
+}
+
+function loadTeams(){
+    let teamsJson = loadJsonFromLocalStorage('teams');
+    teams = JSON.parse(teamsJson);
+    console.log("Teams loaded: ", teams);
+}
+
+function saveMission(){
+    let missionJson = JSON.stringify(mission);
+    saveJsonToLocalStorage(missionJson, 'mission');
+}
+
+function loadMission() {
+    let missionJson = loadJsonFromLocalStorage('mission');
+    mission = JSON.parse(missionJson);
+    console.log("Mission loaded: ", mission);
+}
+
+function loadMission() {
+    const missionJson = loadJsonFromLocalStorage('mission');
+    if (missionJson) {
+        const missionData = JSON.parse(missionJson);
+        return new Mission(
+            missionData.name,
+            missionData.start,
+            missionData.end,
+            missionData.startingPrice
+        );
+    } else {
+        console.error("No mission data found");
+        return null;
+    }
+}
+
+function getCurrentPrice(){
+    let price = mission.startingPrice;
+    let startDate = new Date(mission.start);
+    let endDate = new Date(mission.end);
+    let today = new Date();
+
+    let i = 0;
+    for (let date = startDate; date <= endDate; date.setDate(date.getDate() + 1)) {
+        i++;
+        for (let hour = 10; hour < 16; hour++) {
+            let j = 0;
+            for (let minute = 0; minute < 60; minute += 15) {
+                j++;
+
+                if (date > today) {
+                    return price;
+                }
+                price = hireCosts[i][j-1];
+            }
+        }
+    }
+    return price;
+}
+
+function updateRemoveTeamsSelect() {
+    try {
+        let select = document.querySelector('#removeTeamName');
+        select.innerHTML = '';
+        let defaultOption = document.createElement('option');
+        defaultOption.value = '';
+        defaultOption.text = '-- Select Team --';
+        defaultOption.disabled = true;
+        defaultOption.selected = true;
+        select.appendChild(defaultOption);
+        teams.forEach(team => {
+            let option = document.createElement('option');
+            option.value = team.name;
+            option.text = team.name;
+            select.appendChild(option);
+        });
+    } catch (e){
+        console.error('Error updating remove team select:', e);
+    }
+    
+}
+
+function fillStatusTable(){
+    if (teams == null)
+        return;
+    if(teams != null){
+        if (Object.keys(teams).length === 0) 
+            return;
+    }
+
+    let table = document.querySelector('#teamStatusLabel');
+    table.innerHTML = '';
+    teams.forEach(team => {
+        let row = document.createElement('tr');
+        let name = document.createElement('td');
+        name.textContent = team.name;
+        let balance = document.createElement('td');
+        balance.textContent = team.balance;
+        let currentStory = document.createElement('td');
+        currentStory.textContent = team.currentStory;
+        row.appendChild(name);
+        row.appendChild(balance);
+        row.appendChild(currentStory);
+        table.appendChild(row);
+    });
+}
