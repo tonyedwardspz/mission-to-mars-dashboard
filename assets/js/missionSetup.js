@@ -5,6 +5,8 @@ function setupNewMission(missionData) {
         missionData.end,
         missionData.startingPrice
     );
+
+    console.log("setup new mission - Mission data:", mission);
     
     saveJsonToLocalStorage(JSON.stringify(mission), 'mission');
     console.log("New mission set up:", mission);
@@ -20,6 +22,7 @@ function setupNewMission(missionData) {
 
 
 function saveMission(missionData) {
+    console.log("Saving mission:", missionData);
     saveJsonToLocalStorage(JSON.stringify(missionData), 'mission');
     console.log("Mission saved:", missionData);
 }
@@ -68,7 +71,7 @@ function newMission(missionData){
     localStorage.removeItem('teams');
     localStorage.removeItem('prices');
     
-    saveMission();
+    saveMission();// <--- Here is where the error is
     teams = [];
 
     hireCosts = getPrices(parseInt(mission.startingPrice), "5", 4 );
@@ -79,6 +82,7 @@ function newMission(missionData){
 
 
 function saveCosts(){
+    console.log("Saving costs:", hireCosts);
     let costsJson = JSON.stringify(hireCosts);
     saveJsonToLocalStorage(costsJson, 'prices');
 }

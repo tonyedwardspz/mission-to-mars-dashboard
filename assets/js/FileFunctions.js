@@ -30,6 +30,9 @@ function loadBonusStories() {
 
 // Function to save JSON to local storage
 function saveJsonToLocalStorage(jsonString, key) {
+    console.log("Saving JSON to local storage", jsonString);
+    console.log("Type of jsonString:", typeof jsonString);
+    
     if (typeof jsonString !== 'string') {
         throw new Error('The jsonString parameter must be a string.');
     }
@@ -177,7 +180,7 @@ function loadMission() {
             missionData.startingPrice
         );
     } else {
-        console.error("No mission data found");
+        console.log("No mission data found");
         return null;
     }
 }
@@ -223,7 +226,7 @@ function updateRemoveTeamsSelect() {
             select.appendChild(option);
         });
     } catch (e){
-        console.error('Error updating remove team select:', e);
+        console.log('No teams to remove from the remove team select');
     }
     
 }
