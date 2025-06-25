@@ -3,91 +3,97 @@
     {
         "id": "1",
         "description": "As a mentor I want to see the onboard LED flash so that I am confident the team can deploy working code to the Arduino.",
-        "acceptance": "Given a working arduino when the code is deployed then the onboard LED flashes on for 1 second and off for 1 second.",
+        "acceptance": "Given a working Arduino when the code is deployed then the onboard LED flashes on for 1 second and off for 1 second.",
         "value": "2000"
     },
     {
         "id": "2",
         "description": "As a mentor I want to see the two external LEDs flash alternately so that I am confident the team can interact with different outputs on the Arduino and connect components to breadboard.",
-        "acceptance": "Given a working arduino connected to breadboard, when the code is deployed then 2 LEDs on the breadboard alternate every second.",
+        "acceptance": "Given a working Arduino connected to breadboard, when the code is deployed then 2 LEDs on the breadboard alternate every second.",
         "value": "3000"
     },
     {
         "id": "3",
-        "description": "As a mentor I want to see LEDs progress through a set pattern to simulate a robot going forward for 10 seconds, stop and reverse for 1 second so that the team have a working development environment for motor control.",
+        "description": "As a mentor I want to see LEDs progress through a set pattern to simulate a robot going forward for 10 seconds, stop for 1 second and reverse for 1 second so that the team have a working development environment for motor control.",
         "acceptance": "Given the code is deployed, when the reset button is pressed then the LEDs follow the correct sequence.",
         "value": "5000"
     },
     {
         "id": "4",
-        "description": "As a robot I want to move forward for 1 seconds, pause for 1 second and reverse for 1 seconds so that I can display basic motor control.",
-        "acceptance": "Given the code is deployed, when the reset button is pressed the robot moves forwards for 1 seconds, stops for 1 second, reverses for 1 seconds and stops for one second repeatedly.",
+        "description": "As a robot I want to move forward for 1 seconds, pause for 1 second and reverse for 1 second so that I can display basic motor control.",
+        "acceptance": "Given the code is deployed, when the reset button is pressed the robot moves forwards for 1 second, stops for 1 second, reverses for 1 second and stops for one second repeatedly.",
         "value": "5000"
     },
     {
         "id": "5",
-        "description": "As a robot I want to drive forward for 10 seconds in a straight line so that I can display accurate motor control.",
-        "acceptance": "Given the code is deployed, when the reset button is pressed the robot moves forwards for 10 seconds and stops and the robot has not veered more that 2cm from a straight line and the robot remains stopped.",
+        "description": "As a robot I want to drive forward then turn left and right twice whilst still travelling forwards demonstrating speed control of individual motors.",
+        "acceptance": "Given the code is deployed, when the reset button is pressed the rover drives forward for 2 seconds then turns left for 2 seconds, then right for 2 seconds and repeats.",
         "value": "5000"
     },
     {
         "id": "6",
+        "description": "As a robot I want to drive forward for 10 seconds in a straight line and stops so that I can display accurate motor control.",
+        "acceptance": "Given the code is deployed, when the reset button is pressed the robot moves forwards for 10 seconds and stops and the robot has not veered more that 2cm from a straight line and the robot remains stopped.",
+        "value": "5000"
+    },
+    {
+        "id": "7",
         "description": "As a robot I want to drive forward 2 meters and stop so that I can display accurate distance measurement.",
         "acceptance": "Given the code is deployed, when the reset button is pressed the robot moves forwards 2 meters and stops and remains stopped.",
         "value": "5000"
     },
     {
-        "id": "7",
+        "id": "8",
         "description": "As a robot I want to be able to move forward creating a square shape so that I can display accurate turning features.",
-        "acceptance": "Given the code is deployed, when the reset button is pressed the robot moves forwards x and turns 90 degrees, repeating until a square is drawn. On completion of the robot stops and remains stopped in its original location.",
+        "acceptance": "Given the code is deployed, when the reset button is pressed the robot moves forwards, turns left 90 degrees, repeating until a square is drawn. On completion of the robot stops and remains stopped in its original location.",
         "value": "10000"
     },
     {
-        "id": "8",
+        "id": "9",
         "description": "As a robot I want to be able to draw a figure of eight so that I can display my manoeurability.",
-        "acceptance": "Given the code is deployed, when the reset button is pressed the robot moves forwards x and turns 90 degrees, moves forward 2x and turns 90 degrees (repeat 3x), move forwards 2x and turns 270 degrees(repeat 4 times), finally move forward x and stop and in the position that the robot started. On completion the robot stops and remains stopped.",
+        "acceptance": "Given the code is deployed, when the reset button is pressed the robot moves forwards turns left 90 degrees repeating until a square is drawn. Then repeats using 90 degree right hand turns to create a right handed square. Then stops in the position that the robot started facing the original direction. On completion the robot stops and remains stopped.",
         "value": "5000"
     },
     {
-        "id": "9",
-        "description": "As a robot I want to be able to draw a figure of eight in the forwards direction and then in reverse so that I can display my manoeurability.",
+        "id": "10",
+        "description": "As a robot I want to be able to draw a figure of eight in the forwards direction and then in reverse so that I can display my manoeuvrability.",
         "acceptance": "As previous story with the addition of a 1 second pause on completion of the forward figure of eight and then complete a reverse figure of eight along the same path.",
         "value": "8000"
     },
     {
-        "id": "10",
+        "id": "11",
         "description": "As a robot I want to stop before I hit an obstacle so that I do not get damaged.",
-        "acceptance": "Given the robot is moving forwards, when it encounters an obstacle then it must stop, pause and turn 90 degrees left without hitting the obstabcle.",
+        "acceptance": "Given the robot is moving forwards, when it encounters an obstacle then it must stop, pause and turn 90 degrees left without hitting the obstacle.",
         "value": "10000"
     },
     {
-        "id": "11",
+        "id": "12",
         "description": "As a robot I want to stop if there is no ground within 5cm of the front of the robot.",
         "acceptance": "Given the robot is moving forwards, when it encounters a drop in terrain of 5cms it is to continue, when it encounters a drop in terrain of 6 cms it is to stop and reverse 10cm, stop and remain stopped.",
         "value": "10000"
     },
     {
-        "id": "12",
-        "description": "As a robot I want to follow a homing beacon so that I can find my way to safety at the end of a mission.",
-        "acceptance": "Given the front of is a 145 degrees to a light source when the reset button is pressed then robot must find a light and drive towards it.",
+        "id": "13",
+        "description": "As a robot I want to find a homing beacon so that I can find my way to safety at the end of a mission.",
+        "acceptance": "Given a bright light source to find, the rover must find that light source and drive towards that light source.",
         "value": "15000"
     },
     {
-        "id": "13",
+        "id": "14",
         "description": "As a robot I want to follow a homing beacon across hostile terrain, safely avoiding obstacles and steep drops whilst continuing to follow the beacon so that I can find my way safely back at the end of a mission.",
-        "acceptance": "Given the robot has found and is following a light as in S12, it must stop at obstacles and find a way around until it arrives at the light source.",
+        "acceptance": "Given the robot has found and is following a light as in S13, it must stop at obstacles and find a way around until it arrives at the light source.",
         "value": "20000"
     },
     {
-        "id": "14",
+        "id": "15",
         "description": "As an entrepreneur, I want to be able to promote our Mission to Mars to potential investors via online media.",
         "acceptance": "Given that the teams have access to relevant tools, teams should produce a range of graphics and video for using on social media.",
         "value": "15000"
     },
     {
-        "id": "15",
-        "description": "As an entrepreneur, I want to be able to demostrate the robots capabilities to potential investors.",
-        "acceptance": "Given that the teams have reached a minimum of story 11, teams can create a demo mode showing off as many features of the robot as possible. Only one team can be awarded this prize.",
+        "id": "16",
+        "description": "As an entrepreneur, I want to be able to demonstrate the robots capabilities to potential investors and provide a presentation illustrating the worth of the team.",
+        "acceptance": "Given that the teams have completed as much as possible in the time they will create a demo mode showing off as many features of the robot as possible. The presentation will utilise team values, elevator pitches, retrospectives and learning undertaken through the experience.",
         "value": "25000"
     }],
     "bonusStories": [
