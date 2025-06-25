@@ -1,10 +1,9 @@
-let stories = [];
-let bonusStories = [];
-let teams = [];
+var bonusStories = [];
+var teams = [];
+var mission = {};
+var hireCosts = {};
 let password = 'secret';
-let mission = {};
 let robotHireCost = 14;
-let hireCosts = {};
 const brandColors = ["#00E2B6", "#FB48FE", "#010033", "#49008A", "#01CCE5", "#00126B", "#00E2B6", "#FB48FE", "#010033", "#49008A", "#01CCE5", "#00126B"];
 
 $( document ).ready(function() {
@@ -12,10 +11,14 @@ $( document ).ready(function() {
 
     loadStories().then((data) => {
         stories = data;
+    }).catch(error => {
+        showErrorModal("Failed to load stories: " + error);
     });
 
     loadBonusStories().then((data) => {
         bonusStories = data;
+    }).catch(error => {
+        showErrorModal("Failed to load bonus stories: " + error);
     });
 
     loadTeams();
@@ -47,240 +50,10 @@ $( document ).ready(function() {
     setFormEventListeners();
 });
 
-function loadPrices(){
-    let pricesJson = loadJsonFromLocalStorage('prices');
-    hireCosts = JSON.parse(pricesJson);
-    console.log("Prices loaded: ", hireCosts);
-}
-
-function createExportJson() {
-
-    console.log("Setting up export");
-    let exportData = {
-        teams: teams,
-        mission: mission,
-        hireCosts: hireCosts
-    };
-
-    var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportData, null, 4));
-    var dlAnchorElem = document.getElementById('downloadAnchorElem');
-    dlAnchorElem.setAttribute("href", dataStr );
-    dlAnchorElem.setAttribute("download", "M2M Export" + Date() + ".json");
-}
-
-function importJson(event) {
-    console.log("Importing JSON");
-    var fileInput = document.getElementById('jsonImportSelect');
-    
-    var file = fileInput.files[0];
-    var reader = new FileReader();
-    reader.onload = function(e) {
-        var contents = e.target.result;
-        var data = JSON.parse(contents);
-        console.log(data);
-        teams = data.teams;
-        mission = data.mission;
-        hireCosts = data.hireCosts;
-        saveTeams();
-        saveMission();
-        saveCosts();
-        console.log("Data imported");
-        // window.location.reload();
-    };
-    reader.readAsText(file);
-}
-
-function createTransaction(team, story, value){
-    let transaction = {
-        date: new Date().getTime(),
-        story: story,
-        value: value
-    }
-
-    if (story.toLowerCase().includes("starting")){
-        transaction.date = new Date(mission.start).setHours(10, 0, 0, 0);
-    }
-
-    team.transactions.push(transaction);
-    return team;
-}
-
-function setupDashCharts(){
-    let ctx = document.getElementById('teamTotals').getContext('2d');
-    let statusChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: teams.map(team => team.name),
-            datasets: [{
-                label: "Current balance",
-                data: teams.map(team => team.balance),
-                backgroundColor: brandColors,
-                borderColor: '#00E2B6',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            scales: {
-                xAxes: [{
-                    
-                }],
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true,
-                        },
-                }]
-            }
-        }
-    });
-}
-
-function groupTransactionsByHour(teams) {
-    const result = {};
-
-    teams.forEach(team => {
-        const teamName = team.name;
-        const transactions = team.transactions;
-        const dailyTotals = {};
-
-        let missionDays = [];
-        let count = 0;
-        for (let date = new Date(mission.start); date <= new Date(); date.setDate(date.getDate() + 1)) {
-            missionDays.push(date.getDay());
-
-            if (!dailyTotals[count]) {
-                dailyTotals[count.toString()] = {
-                    "10": 0,
-                    "11": 0,
-                    "12": 0,
-                    "13": 0,
-                    "14": 0,
-                    "15": 0,
-                    "16": 0,
-                    "17": 0 
-                };
-            }
-            count++;
-        }
-
-        transactions.forEach(transaction => {
-
-            const date = new Date(transaction.date);
-            const day = date.getDay();
-            const hour = date.getHours();
-            const amount = transaction.value;
-            const dayIndex = missionDays.indexOf(day);
-
-            if (hour >= 10 && hour < 17) {
-                if (transaction.story.toLowerCase().includes("hired") || transaction.story.toLowerCase().includes("deducted")) {
-                    dailyTotals[dayIndex][hour] -= amount;
-                } else {
-                    dailyTotals[dayIndex][hour] += parseInt(amount);
-                }
-            } else if (hour >= 17) {
-                if (transaction.story.toLowerCase().includes("hired") || transaction.story.toLowerCase().includes("deducted")) {
-                    dailyTotals[dayIndex][17] -= amount;
-                } else {
-                    dailyTotals[dayIndex][17] += parseInt(amount);
-                }
-            } else if (hour < 10) {
-                if (transaction.story.toLowerCase().includes("hired") || transaction.story.toLowerCase().includes("deducted")) {
-                    dailyTotals[dayIndex][10] -= amount;
-                } else {
-                    dailyTotals[dayIndex][10] += parseInt(amount);
-                }
-            }
-        });
-
-        let lastTotal = 0;
-        Object.keys(dailyTotals).forEach(day => {
-            Object.keys(dailyTotals[day]).forEach(hour => {
-                let total = dailyTotals[day][hour];
-                if (total !== lastTotal) {
-                    lastTotal += parseInt(total);
-                }
-                dailyTotals[day][hour] = lastTotal;
-            });
-        });
-
-        console.log("Daily totals: ", dailyTotals);
-        result[teamName] = dailyTotals;
-    });
-    return result;
-}
-
-
-function setupMissionChart(){
-    let labels = getMissionDays();
-    let groupedTransactions = groupTransactionsByHour(teams);
-    let dataset = [];
-    
-    Object.keys(groupedTransactions).forEach(team => {
-        let teamData = { "data": [] };
-        Object.keys(groupedTransactions[team]).forEach(day => {
-            Object.keys(groupedTransactions[team][day]).forEach(hour => {
-                teamData.data.push( { "x": hour, "y": groupedTransactions[team][day][hour] } );  
-            });
-            teamData["label"] = team;
-        });
-        dataset.push(teamData);
-    });
-    console.log("processed data: ", dataset);
-
-    let ctx = document.getElementById('teamRiseFall').getContext('2d');
-    let missionChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: labels,
-            datasets: dataset.map((data, index) => {
-                return {
-                    label: data.label,
-                    data: data.data,
-                    backgroundColor: brandColors[index],
-                    borderColor: brandColors[index],
-                    borderWidth: 1,
-                    fill: false
-                }        
-            })
-        },
-        options: {
-            spanGaps: true,
-            scales: {
-                x: {
-                    type: 'time',
-                    time: {
-                        unit: 'hour',
-                        min: new Date().setHours(10, 0, 0, 0),
-                        max: new Date().setHours(17, 0, 0, 0),
-                        stepSize: 2,
-                        displayFormats: {
-                            hour: 'hA'
-                        }
-                    },
-                    parsing: false
-                }
-            }
-        }
-    });
-}
-
-function getMissionDays() {
-    let startDate = new Date(mission.start);
-    let endDate = new Date(mission.end);
-    let today = new Date();
-    let labels = [];
-
-    for (let date = startDate; date <= endDate; date.setDate(date.getDate() + 1)) {
-        for (let hour = 10; hour <= 17; hour++) {
-            let time = new Date(date);
-            time.setHours(hour, 0, 0, 0);
-            if (time > today) {
-                break;
-            }
-            labels.push(time.toLocaleString('en-UK', { weekday: 'short', hour: 'numeric', hour12: true }));
-        }
-    }
-
-    return labels;
+function showErrorModal(message) {
+    console.error(message);
+    $('#errorModal').modal('show');
+    $('#errorModalBody').text(message);
 }
 
 function setFeedback(message, type, container) {
@@ -298,14 +71,6 @@ function setFeedback(message, type, container) {
     setTimeout(() => {
         feedback.innerHTML = '';
     }, 3000);
-}
-
-// a function that resets all data in the app.
-function resetData() {
-    localStorage.removeItem('teams');
-    localStorage.removeItem('mission');
-    localStorage.removeItem('prices');
-    location.reload();
 }
 
 function setFormEventListeners() {
@@ -337,18 +102,6 @@ function setFormEventListeners() {
             console.log(data);
             newMission(data);
             setFeedback('Mission created', 'success', '#missionFeedbackContainer');
-        });
-
-        $('#edit-team-form').on('submit', function(e) {
-            e.preventDefault();
-            const data = Object.fromEntries(new FormData(e.target).entries());
-            console.log(data);
-            let team = findTeam(data.editTeamName);
-            team.name = data.updatedTeamName;
-            teams[teams.findIndex(t => t.name === data.editTeamName)] = team;
-            saveTeams();
-            fillTeamSelect();
-            setFeedback('Team Edit Saved', 'success', '#teamEditedFeedbackContainer');
         });
 
         $('#edit-team-form').on('submit', function(e) {
@@ -403,7 +156,7 @@ function setFormEventListeners() {
                 setFeedback('Story completed', 'success', '#storyFeedbackContainer');
             } else {
                 console.log('Incorrect password');
-                setFeedback('Password Incomplete', 'danger', '#storyFeedbackContainer');
+                setFeedback('Password incorrect', 'danger', '#storyFeedbackContainer');
             }
         });
 
@@ -418,7 +171,7 @@ function setFormEventListeners() {
                 setFeedback('Hire cost deducted', 'success', '#hireFeedbackContainer');
             } else {
                 console.log('Incorrect password');
-                setFeedback('Password Incomplete', 'danger', '#hireFeedbackContainer');
+                setFeedback('Password incorrect', 'danger', '#hireFeedbackContainer');
             }
         });
 
@@ -433,7 +186,7 @@ function setFormEventListeners() {
                 setFeedback('Bonus earned', 'success', '#bonusAmountFeedbackContainer');
             } else {
                 console.log('Incorrect password');
-                setFeedback('Password Incomplete', 'danger', '#bonusAmountFeedbackContainer');
+                setFeedback('Password incorrect', 'danger', '#bonusAmountFeedbackContainer');
             }
         });
 
@@ -450,6 +203,10 @@ function setFormEventListeners() {
                 $('#bonusStoryDescription option[value="' + story.id + '"]').prop('disabled', true);
                 for (let i = 1; i < 5; i++) {
                     if (team.bonusStoriesCompleted.indexOf(i) === -1) {
+                        /*team.bonusStoriesCompleted.push(i);
+                        team.balance += story.payout;
+                        createTransaction(team, story.description, story.payout);
+                        saveTeams();*/
                         $('#bonusStoryDescription option[value="' + (i + 1) + '"]').prop('selected', true);
                         break;
                     }
@@ -458,248 +215,10 @@ function setFormEventListeners() {
                 setFeedback('Bonus story completed', 'success', '#bonusStoryFeedbackContainer');
             } else {
                 console.log('Incorrect password');
-                setFeedback('Password Incorrect', 'danger', '#bonusStoryFeedbackContainer');
+                setFeedback('Password incorrect', 'danger', '#bonusStoryFeedbackContainer');
             }
         });
-
-        $('#taskDescription').on('change', function(e) {
-            e.preventDefault();
-            console.log('Task selection changes!');
-
-            let id = e.target.value;
-            let story = findStory(id);
-            let teamName = $('#taskTeamName').val();
-            let team = findTeam(teamName);
-
-            $('#task-description option[value="' + story.id + '"]').prop('disabled', true);
-            $('#task-description option[value="' + team.currentStory + '"]').prop('selected', true);
-
-            let value = 0;
-            if (story) {
-                value = story.value;
-            }
-
-            $('#taskPayout').val(value);
-        });
-
-        $('#bonusStoryTeamName').on('change', function(e) {
-            console.log("Bonus story team selected ");
-            let teamName = $('#bonusStoryTeamName').val();
-            let team = findTeam(teamName);
-
-            let select = $('#bonusStoryDescription');
-            if (select) { 
-                // get all options from the select
-                let options = select.find('option');
-
-                // loop the options. If the option value is in the team's completed bonus stories, disable the option
-                options.each(function() {
-                    let option = $(this);
-                    if (team.bonusStoriesCompleted.indexOf(option.val()) > -1) {
-                        option.prop('disabled', true);
-                    } else {
-                        option.prop('disabled', false);
-                    }
-                });
-
-                options.each(function() {
-                    // if the option isn't disabled, select it and break the loop
-                    if (!$(this).prop('disabled')) {
-                        $(this).prop('selected', true);
-                        return false;
-                    }
-                });
-            } else {
-                console.error(`Element with ID ${id} not found.`);
-            }
-            select.trigger('change');
-        });
-
-        $('#bonusStoryDescription').on('change', function(e) {
-            e.preventDefault();
-            console.log('Bonus Story selection changes!');
-
-            let id = e.target.value;
-            let story = findBonus(id);
-
-            let value = 0;
-            if (story) {
-                value = story.value;
-            }
-
-            $('#bonusStoryPayout').val(value);
-        });
     }
-}
-
-function updateRemoveTeamsSelect() {
-    try {
-        let select = document.querySelector('#removeTeamName');
-        select.innerHTML = '';
-        let defaultOption = document.createElement('option');
-        defaultOption.value = '';
-        defaultOption.text = '-- Select Team --';
-        defaultOption.disabled = true;
-        defaultOption.selected = true;
-        select.appendChild(defaultOption);
-        teams.forEach(team => {
-            let option = document.createElement('option');
-            option.value = team.name;
-            option.text = team.name;
-            select.appendChild(option);
-        });
-    } catch (e){
-        console.error('Error updating remove team select:', e);
-    }
-    
-}
-
-function newMission(missionData){
-    mission = new Mission(missionData.missionName, missionData.startDate, missionData.endDate, missionData.coreCoinPrice);
-    
-    localStorage.removeItem('mission');
-    localStorage.removeItem('teams');
-    localStorage.removeItem('prices');
-    
-    saveMission();
-    teams = [];
-
-    hireCosts = getPrices(parseInt(mission.startingPrice), "5", 4 );
-    saveCosts();
-
-    console.log("Mission created");
-}
-
-function saveCosts(){
-    let costsJson = JSON.stringify(hireCosts);
-    saveJsonToLocalStorage(costsJson, 'prices');
-}
-
-function bonusEarned(teamName, bonus){
-    let team = findTeam(teamName);
-    team.balance = parseInt(team.balance) + parseInt(bonus);
-    createTransaction(team, "Bounus Amount", bonus);
-    saveTeams();
-    console.log("Bonus added");
-}
-
-function deductCost(teamName, cost) {
-    let team = findTeam(teamName);
-    let spend = parseInt(cost) * getCurrentPrice();
-    team.balance = parseInt(team.balance) - parseInt(spend);
-    createTransaction(team, "Robot Hired for " + cost + " minutes", spend);
-    saveTeams();
-    console.log("Cost deducted");
-}
-
-function completeStory(storyId, teamName){
-    let story = findStory(storyId);
-    let team = findTeam(teamName);
-    team.balance = parseInt(team.balance) + parseInt(story.value);
-    team.currentStory++;
-
-    $('#taskDescription option[value="' + storyId + '"]').prop('disabled', true);
-    $('#taskDescription option[value="' + team.currentStory + '"]').prop('selected', true);
-
-    if (story) {
-        value = story.value;
-    }
-    $('#taskPayout').val(value);
-
-    createTransaction(team, "Story " + storyId + " completed", story.value);
-
-    saveTeams();
-    console.log("Story completed"); 
-}
-
-function completeBonus(storyId, teamName){
-    let story = findBonus(storyId);
-    let team = findTeam(teamName);
-    team.balance = parseInt(team.balance) + parseInt(story.value);
-    team.bonusStoriesCompleted.push(storyId);
-
-    $('#bonusStoryDescription option[value="' + storyId + '"]').prop('disabled', true);
-    
-    let nextBonus;
-    // find the next bonus story
-    for (let i = 0; i < bonusStories.length; i++) {
-        if (team.bonusStoriesCompleted.indexOf(bonusStories[i].id) === -1) {
-            nextBonus = bonusStories[i];
-            break;
-        }
-    }
-    
-    $('#bonusStoryDescription option[value="' + nextBonus + '"]').prop('selected', true);
-
-    if (story) {
-        value = story.value;
-    }
-    $('#bonusStoryPayout').val(value);
-
-    createTransaction(team, "Bonus Story " + storyId + " completed", story.value);
-    saveTeams();
-    console.log("Story completed"); 
-}
-
-function addTeam(teamData){
-    let team = new Team(teamData.teamName, teamData.teamBalance);
-    team = createTransaction(team, "Starting Balance", teamData.teamBalance);
-    team.color = brandColors[teams.length];
-    teams.push(team);
-    console.log(teams);
-    saveTeams();
-}
-
-function removeTeam(teamName){
-    let teamIndex = teams.findIndex(team => team.name.toLowerCase() === teamName.toLowerCase());
-    if (teamIndex > -1) {
-        teams.splice(teamIndex, 1);
-    }
-    console.log(teams);
-    saveTeams();
-}
-
-function findTeam(teamName){
-    let teamIndex = teams.findIndex(team => team.name.toLowerCase() === teamName.toLowerCase());
-    if (teamIndex > -1) {
-        return teams[teamIndex];
-    }
-}
-
-function findStory(storyId){
-    let storyIndex = stories.findIndex(story => parseInt(story.id) === parseInt(storyId));
-    if (storyIndex > -1) {
-        return stories[storyIndex];
-    }
-}
-
-function findBonus(storyId){
-    let storyIndex = bonusStories.findIndex(story => parseInt(story.id) === parseInt(storyId));
-    if (storyIndex > -1) {
-        return bonusStories[storyIndex];
-    }
-}
-
-function saveTeams(){
-    let teamsJson = JSON.stringify(teams);
-    saveJsonToLocalStorage(teamsJson, 'teams');
-}
-
-function loadTeams(){
-    let teamsJson = loadJsonFromLocalStorage('teams');
-    teams = JSON.parse(teamsJson);
-    console.log("Teams loaded: ", teams);
-}
-
-function saveMission(){
-    let missionJson = JSON.stringify(mission);
-    saveJsonToLocalStorage(missionJson, 'mission');
-}
-
-function loadMission(){
-    let missionJson = loadJsonFromLocalStorage('mission');
-    mission = JSON.parse(missionJson);
-    console.log("Mission loaded: ", mission);
 }
 
 function fillTeamSelect(){
@@ -772,55 +291,6 @@ function fillTeamSelect(){
     }
 }
 
-function getCurrentPrice(){
-    let price = mission.startingPrice;
-    let startDate = new Date(mission.start);
-    let endDate = new Date(mission.end);
-    let today = new Date();
-
-    let i = 0;
-    for (let date = startDate; date <= endDate; date.setDate(date.getDate() + 1)) {
-        i++;
-        for (let hour = 10; hour < 16; hour++) {
-            let j = 0;
-            for (let minute = 0; minute < 60; minute += 15) {
-                j++;
-
-                if (date > today) {
-                    return price;
-                }
-                price = hireCosts[i][j-1];
-            }
-        }
-    }
-    return price;
-}
-
-function fillStatusTable(){
-    if (teams == null)
-        return;
-    if(teams != null){
-        if (Object.keys(teams).length === 0) 
-            return;
-    }
-
-    let table = document.querySelector('#teamStatusLabel');
-    table.innerHTML = '';
-    teams.forEach(team => {
-        let row = document.createElement('tr');
-        let name = document.createElement('td');
-        name.textContent = team.name;
-        let balance = document.createElement('td');
-        balance.textContent = team.balance;
-        let currentStory = document.createElement('td');
-        currentStory.textContent = team.currentStory;
-        row.appendChild(name);
-        row.appendChild(balance);
-        row.appendChild(currentStory);
-        table.appendChild(row);
-    });
-}
-
 function fillHireCostsTable(){
 
     let startdate = new Date(mission.start);
@@ -863,6 +333,7 @@ function fillHireCostsTable(){
         }
         costsTable.push({date: "Date", time: "Time" , cost: "Price", diff: "Difference"});
     }
+
 
     let table = document.querySelector('#hireCostsTable');
     table.innerHTML = '';
